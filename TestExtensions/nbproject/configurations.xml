@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="94">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="Common" displayName="Common" projectFiles="true">
+      <logicalFolder name="Assignable" displayName="Assignable" projectFiles="true">
+        <itemPath>../Assignable/Assignable.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Clonable" displayName="Clonable" projectFiles="true">
+        <itemPath>../Clonable/Clonable.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Comparable" displayName="Comparable" projectFiles="true">
+        <itemPath>../Comparable/Comparable.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Exceptions" displayName="Exceptions" projectFiles="true">
+        <itemPath>../Exceptions/Exception.h</itemPath>
+        <itemPath>../Exceptions/MsgException.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Functor" displayName="Functor" projectFiles="true">
+        <itemPath>../Functor/Functor.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Include" displayName="Include" projectFiles="true">
+      </logicalFolder>
+      <logicalFolder name="MathExt" displayName="MathExt" projectFiles="true">
+        <itemPath>../MathExt/MathExt.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Messages" displayName="Messages" projectFiles="true">
+        <itemPath>../Messages/Messages.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Object" displayName="Object" projectFiles="true">
+        <itemPath>../Object/Object.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Operationable"
+                     displayName="Operationable"
+                     projectFiles="true">
+        <itemPath>../Operationable/Operationable.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Runnable" displayName="Runnable" projectFiles="true">
+        <itemPath>../Runnable/Runnable.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Savable"
+                     displayName="SavableRestorable"
+                     projectFiles="true">
+        <itemPath>../Savable/SavableRestorable.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="SmartPointer"
+                     displayName="SmartPointer"
+                     projectFiles="true">
+        <itemPath>../SmartPointer/SmartPointer.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="WritableReadable"
+                     displayName="WritableReadable"
+                     projectFiles="true">
+        <itemPath>../WritableReadable/WritableReadable.h</itemPath>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="Include" displayName="Include" projectFiles="true">
+      <itemPath>../Include/Assignable</itemPath>
+      <itemPath>../Include/Clonable</itemPath>
+      <itemPath>../Include/Comparable</itemPath>
+      <itemPath>../Include/Exceptions</itemPath>
+      <itemPath>../Include/Functor</itemPath>
+      <itemPath>../Include/MathExt</itemPath>
+      <itemPath>../Include/Messages</itemPath>
+      <itemPath>../Include/Object</itemPath>
+      <itemPath>../Include/Operationable</itemPath>
+      <itemPath>../Include/Runnable</itemPath>
+      <itemPath>../Include/SavableRestorable</itemPath>
+      <itemPath>SmartPointer</itemPath>
+      <itemPath>../Include/WritableReadable</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>main.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>..</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="4">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <qt>
+        <modules>core gui widgets</modules>
+      </qt>
+      <compileType>
+        <ccTool>
+          <standard>8</standard>
+          <incDir>
+            <pElem>../Include</pElem>
+          </incDir>
+        </ccTool>
+      </compileType>
+      <item path="../Assignable/Assignable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Clonable/Clonable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Comparable/Comparable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Exceptions/Exception.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Exceptions/MsgException.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Functor/Functor.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Assignable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Clonable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Comparable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Exceptions" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Functor" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/MathExt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Messages" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Object" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Operationable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Runnable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/SavableRestorable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/WritableReadable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../MathExt/MathExt.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Messages/Messages.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Object/Object.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Operationable/Operationable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Runnable/Runnable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Savable/SavableRestorable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../SmartPointer/SmartPointer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../WritableReadable/WritableReadable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="SmartPointer" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="4">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <qt>
+        <buildMode>1</buildMode>
+        <modules>core gui widgets</modules>
+      </qt>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <standard>8</standard>
+          <incDir>
+            <pElem>../Include</pElem>
+          </incDir>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+      </compileType>
+      <item path="../Assignable/Assignable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Clonable/Clonable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Comparable/Comparable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Exceptions/Exception.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Exceptions/MsgException.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Functor/Functor.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Assignable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Clonable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Comparable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Exceptions" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Functor" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/MathExt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Messages" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Object" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Operationable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Runnable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/SavableRestorable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/WritableReadable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../MathExt/MathExt.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Messages/Messages.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Object/Object.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Operationable/Operationable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Runnable/Runnable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Savable/SavableRestorable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../SmartPointer/SmartPointer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../WritableReadable/WritableReadable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="SmartPointer" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
