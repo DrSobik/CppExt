@@ -814,6 +814,25 @@ int main(int argc, char *argv[]) {
 		out << rgmt.rndFloat() << endl;
 	}
 	
+	unsigned long int numRndClasses = 500;
+	unsigned long int numRndTests = 50000000000;
+	vector<double> testFreqs(numRndClasses);
+	
+	for (unsigned long int i = 0 ; i < numRndClasses ; i++){
+		testFreqs[i] = 0;
+	}
+	for (unsigned long int i = 0 ; i < numRndTests ; i++){
+		unsigned long int curIdx = rgmt.rndInt((unsigned long int)(0), numRndClasses - 1);
+		
+		testFreqs[curIdx]++;
+	}
+	for (unsigned long int i = 0 ; i < numRndClasses ; i++){
+		testFreqs[i]/=double(numRndTests);
+		
+		out << testFreqs[i] << " ";
+	}
+	out << endl;
+	
 	
 	//throw ErrException();
 

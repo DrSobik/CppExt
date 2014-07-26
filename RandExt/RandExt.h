@@ -150,14 +150,14 @@ namespace Common {
 			
 			virtual GeneralRandGen* clone() = 0;
 
-			/** Generate a random integer out of [0, 2^32]-1. */
-			virtual unsigned long int rndInt() = 0;
-
 			/** Generate a random float out of [0, 1]. */
 			virtual double rndFloat() {
 				return ((double) rndInt()) / double(IntRandGen::maxGenInt);
 			}
-
+			
+			using IntRandGen::rndInt;
+			using FloatRandGen::rndFloat;
+			
 		};
 
 		/**********************************************************************/
@@ -240,7 +240,10 @@ namespace Common {
 
 				return y;
 			}
-
+		
+			using GeneralRandGen::rndInt; // Reuse from IntRandGen
+			using GeneralRandGen::rndFloat; // Reuse from FloatRandGen
+			
 		};
 
 		/**********************************************************************/
@@ -294,6 +297,9 @@ namespace Common {
 				return X;
 			}
 
+			using GeneralRandGen::rndInt; // Reuse from IntRandGen
+			using GeneralRandGen::rndFloat; // Reuse from FloatRandGen
+			
 		};
 
 
