@@ -808,31 +808,36 @@ int main(int argc, char *argv[]) {
 	out << endl;
 
 	
-	RandGenMT rgmt(0);
+	RandGenMT rgmt(1872638163);
 	
 	for (int i = 0 ; i < 10000 ; i++){
 		out << rgmt.rndFloat() << endl;
 	}
 	
-	unsigned long int numRndClasses = 500;
-	unsigned long int numRndTests = 50000000000;
+	unsigned int numRndClasses = 100;
+	unsigned int numRndTests = 500000000;
 	vector<double> testFreqs(numRndClasses);
 	
-	for (unsigned long int i = 0 ; i < numRndClasses ; i++){
+	for (unsigned int i = 0 ; i < numRndClasses ; i++){
 		testFreqs[i] = 0;
 	}
-	for (unsigned long int i = 0 ; i < numRndTests ; i++){
-		unsigned long int curIdx = rgmt.rndInt((unsigned long int)(0), numRndClasses - 1);
+	for (unsigned int i = 0 ; i < numRndTests ; i++){
+		unsigned int curIdx = rgmt.rndInt(1, numRndClasses);
 		
-		testFreqs[curIdx]++;
+		testFreqs[curIdx - 1]++;
 	}
-	for (unsigned long int i = 0 ; i < numRndClasses ; i++){
+	double sumFreq = 0.0;
+	for (unsigned int i = 0 ; i < numRndClasses ; i++){
 		testFreqs[i]/=double(numRndTests);
+		
+		sumFreq+= testFreqs[i];
 		
 		out << testFreqs[i] << " ";
 	}
 	out << endl;
+	out << "sumFreq : " << sumFreq << endl;
 	
+	out << "Size of unsigned int : " << sizeof(unsigned int) << endl;
 	
 	//throw ErrException();
 

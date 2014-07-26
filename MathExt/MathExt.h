@@ -352,7 +352,7 @@ namespace Common {
 		/**********************************************************************/
 
 		inline double round(const double& x) {
-			return std::floor(x + 0.5);
+			return std::round(x);//std::floor(x + 0.5);
 		}
 
 		inline double ceil(const double& x) {

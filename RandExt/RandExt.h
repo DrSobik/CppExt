@@ -10,9 +10,11 @@
 
 #include "Object"
 #include "Clonable"
+#include "MathExt"
 
 #include <vector>
 
+using namespace Common;
 using namespace Common::Interfaces;
 
 namespace Common {
@@ -25,7 +27,7 @@ namespace Common {
 		class RandGen : public Object<> {
 		private:
 
-			std::vector<unsigned long int> seeds; // Seeds
+			std::vector<unsigned int> seeds; // Seeds
 
 		protected:
 
@@ -33,7 +35,7 @@ namespace Common {
 
 			RandGen(const RandGen& orig) : BasicObject(orig), Object<>(orig), seeds(orig.seeds) {} // No initialization in the copy constructor
 
-			RandGen(const std::vector<unsigned long int>& someSeeds) {
+			RandGen(const std::vector<unsigned int>& someSeeds) {
 				setSeeds(someSeeds);
 			}
 
@@ -44,13 +46,19 @@ namespace Common {
 			virtual ~RandGen() {}
 
 			/** Set the seeds of the generator and initialize it. */
-			void setSeeds(const std::vector<unsigned long int>& seeds) {
+			void setSeeds(const std::vector<unsigned int>& seeds) {
 				if (seeds.size() == 0) throw ErrMsgException<Message<>>("Common::Rand::RandGen::setSeeds : No seeds provided!!!", this);
 				this->seeds = seeds;
 				init();
 			}
 
-			const std::vector<unsigned long int>& getSeeds() {
+			void setSeed(const unsigned int& seed) {
+				std::vector<unsigned int> newSeeds;
+				newSeeds.push_back(seed);
+				setSeeds(newSeeds);
+			}
+			
+			const std::vector<unsigned int>& getSeeds() {
 				return seeds;
 			}
 
@@ -66,13 +74,13 @@ namespace Common {
 
 		protected:
 
-			const unsigned long int maxGenInt; // The upper bound of the generated integers 
+			const unsigned int maxGenInt; // The upper bound of the generated integers 
 			
-			IntRandGen() : maxGenInt((unsigned long int)(((unsigned long long int)(2) << 31) - 1)) {}
+			IntRandGen() : maxGenInt((unsigned int)((((unsigned long int)(2)) << 31) - 1)) {}
 
 			IntRandGen(const IntRandGen& orig) : BasicObject(orig), RandGen(orig), ClonableTo<IntRandGen>(), maxGenInt(orig.maxGenInt) {}
 
-			IntRandGen(std::vector<unsigned long int>& seeds) : RandGen(seeds), maxGenInt((unsigned long int)(((unsigned long long int)(2) << 31) - 1)) {}
+			IntRandGen(std::vector<unsigned int>& seeds) : RandGen(seeds), maxGenInt((unsigned int)((((unsigned long int)(2)) << 31) - 1)) {}
 			
 			// Clone the integer RNG
 			virtual IntRandGen* clone() = 0; 
@@ -81,15 +89,16 @@ namespace Common {
 
 			virtual ~IntRandGen() {}
 			
-			const unsigned long int& getMaxGenInt(){return maxGenInt;}
+			const unsigned int& getMaxGenInt(){return maxGenInt;}
 			
 			/** Generate a random integer out of [0, 2^32]-1. */
-			virtual unsigned long int rndInt() = 0;
+			virtual unsigned int rndInt() = 0;
 
 			/** Generate a random integer out of [a,b]. */
-			unsigned long int rndInt(const unsigned long int& a, const unsigned long int& b) {
-				unsigned long int rndInteger = rndInt();
-				return a + (unsigned long int) (double (rndInteger) / double (maxGenInt) * double (b - a));
+			unsigned int rndInt(const unsigned int& a, const unsigned int& b) {
+				unsigned int rndInteger = rndInt();
+				// IMPORTANT!!! We generate a random double out of [a - 0.5; b + 0.5] to make equal selection probabilities when rounding! Otherwise the probability of selecting a or b it twice smaller than it should be.
+				return (unsigned int) Math::round ( double(a - 0.5) + double (rndInteger) / double (maxGenInt) * double (b + 0.5 - (a - 0.5)));
 			}
 
 		};
@@ -108,7 +117,7 @@ namespace Common {
 
 			FloatRandGen(const FloatRandGen& orig) : BasicObject(orig), RandGen(orig), ClonableTo<FloatRandGen>() {}
 
-			FloatRandGen(std::vector<unsigned long int>& seeds) : RandGen(seeds) {}
+			FloatRandGen(std::vector<unsigned int>& seeds) : RandGen(seeds) {}
 
 			virtual FloatRandGen* clone() = 0;
 
@@ -140,7 +149,7 @@ namespace Common {
 
 			GeneralRandGen(const GeneralRandGen& orig) : BasicObject(orig), RandGen(orig), IntRandGen(orig), FloatRandGen(orig), ClonableTo<GeneralRandGen>() {}
 
-			GeneralRandGen(const std::vector<unsigned long int>& seeds) : RandGen(seeds) {}
+			GeneralRandGen(const std::vector<unsigned int>& seeds) : RandGen(seeds) {}
 			
 			virtual void init() = 0;
 
@@ -169,8 +178,8 @@ namespace Common {
 			//Q_OBJECT
 		private:
 
-			unsigned long int MT [624];
-			unsigned long int idx; // Initial value = 0
+			unsigned int MT [624];
+			unsigned int idx; // Initial value = 0
 
 		protected:
 
@@ -180,9 +189,9 @@ namespace Common {
 
 			RandGenMT(const RandGenMT& orig) : BasicObject(), RandGen(orig), GeneralRandGen(orig), ClonableTo<RandGenMT>() {}
 
-			RandGenMT(const std::vector<unsigned long int>& seeds) : GeneralRandGen(seeds) {}
+			RandGenMT(const std::vector<unsigned int>& seeds) : GeneralRandGen(seeds) {}
 
-			RandGenMT(const unsigned long int& seed) {setSeed(seed);}
+			RandGenMT(const unsigned int& seed) {setSeed(seed);}
 
 			virtual ~RandGenMT() {}
 
@@ -191,11 +200,11 @@ namespace Common {
 
 				idx = 0;
 
-				std::vector<unsigned long int> curSeeds = getSeeds();
+				std::vector<unsigned int> curSeeds = getSeeds();
 
 				MT[0] = curSeeds[0];
 
-				for (unsigned long int i = 1; i <= 623; i++) { // loop over each other element
+				for (unsigned int i = 1; i <= 623; i++) { // loop over each other element
 					MT[i] = (1812433253 * (MT[i - 1] ^ ((MT[i - 1] >> 30))) + i) & 0xFFFFFFFF; // 0x6c078965
 				}
 
@@ -203,16 +212,10 @@ namespace Common {
 			
 			virtual RandGenMT* clone() {return new RandGenMT(*this);}
 
-			void setSeed(const unsigned long int& seed) {
-				std::vector<unsigned long int> curSeeds;
-				curSeeds.push_back(seed);
-				setSeeds(curSeeds);
-			}
-
 			/** Generate the parameters for MT. */
 			void generateNumbers() {
 				for (int i = 0; i <= 623; i++) {
-					unsigned long int y = (MT[i] & 0x80000000) // bit 31 (32nd bit) of MT[i]
+					unsigned int y = (MT[i] & 0x80000000) // bit 31 (32nd bit) of MT[i]
 							+ (MT[(i + 1) % 624] & 0x7fffffff); // bits 0-30 (first 31 bits) of MT[...]
 
 					MT[i] = MT[(i + 397) % 624] ^ (y >> 1);
@@ -224,12 +227,12 @@ namespace Common {
 			}
 
 			/** Generate a random integer out of [0, 2^32]-1 using the MT19937 algorithm. */
-			virtual unsigned long int rndInt() {
+			virtual unsigned int rndInt() {
 				if (idx == 0) {
 					generateNumbers();
 				};
-
-				unsigned long int y = MT[idx];
+				
+				unsigned int y = MT[idx];
 
 				y = y ^ (y >> 11);
 				y = y ^ ((y << 7) & (2636928640)); // 0x9d2c5680
@@ -254,30 +257,30 @@ namespace Common {
 		class RandGenLCGNL : public GeneralRandGen, ClonableTo<RandGenLCGNL> {
 		private:
 
-			const unsigned long long int a;
-			const unsigned long long int c;
-			const unsigned long long int m;
+			const unsigned long int a;
+			const unsigned long int c;
+			const unsigned long int m;
 
-			unsigned long long int X;
+			unsigned long int X;
 
 		protected:
 
-			RandGenLCGNL() : GeneralRandGen(), a((unsigned long long int)(6364136223846793005)), c((unsigned long long int)(1)), m((unsigned long long int)((unsigned long long int)(2) << 63) - 1), X(0) {}
+			RandGenLCGNL() : GeneralRandGen(), a((unsigned long int)(6364136223846793005)), c((unsigned long int)(1)), m((unsigned long int)((unsigned long int)(2) << 63) - 1), X(0) {}
 
 		public:
 
 			RandGenLCGNL(const RandGenLCGNL& orig) : BasicObject(orig), RandGen(orig), GeneralRandGen(orig), ClonableTo<RandGenLCGNL>(), a(orig.a), c(orig.c), m(orig.m), X(orig.X) {}
 
-			RandGenLCGNL(const std::vector<unsigned long int>& seeds) : GeneralRandGen(seeds), a((unsigned long long int)(6364136223846793005)), c((unsigned long long int)(1)), m((unsigned long long int)((unsigned long long int)(2) << 63) - 1), X(0) {}
+			RandGenLCGNL(const std::vector<unsigned int>& seeds) : GeneralRandGen(seeds), a((unsigned long int)(6364136223846793005)), c((unsigned long int)(1)), m((unsigned long int)((unsigned long int)(2) << 63) - 1), X(0) {}
 
-			RandGenLCGNL(const unsigned long int& seed) : a((unsigned long long int)(6364136223846793005)), c((unsigned long long int)(1)), m((unsigned long long int)((unsigned long long int)(2) << 63) - 1), X(0) {
+			RandGenLCGNL(const unsigned int& seed) : a((unsigned long int)(6364136223846793005)), c((unsigned long int)(1)), m((unsigned long int)((unsigned long int)(2) << 63) - 1), X(0) {
 				setSeed(seed);
 			}
 
 			virtual ~RandGenLCGNL() {}
 
 			virtual void init() {
-				std::vector<unsigned long int> curSeeds = getSeeds();
+				std::vector<unsigned int> curSeeds = getSeeds();
 				X = curSeeds[0];
 			}
 			
@@ -285,14 +288,8 @@ namespace Common {
 				return new RandGenLCGNL(*this);
 			}
 
-			void setSeed(const quint32& seed) {
-				std::vector<unsigned long int> newSeeds;
-				newSeeds.push_back(seed);
-				setSeeds(newSeeds);
-			}
-
 			/** Generate a random integer out of [0, 2^32]-1. */
-			virtual unsigned long int rndInt() {
+			virtual unsigned int rndInt() {
 				X = ((a * X + c) & 0xFFFFFFFFFFFFFFFF) >> 32;
 				return X;
 			}
