@@ -9,7 +9,6 @@
 #define	MATHEXT_H
 
 #include <cmath>
-#include <limits.h>
 #include <vector>
 
 #include "Exceptions"
@@ -31,8 +30,10 @@ namespace Common {
 		const double Pi_2 = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679 / 2.0; //M_PI_2;
 		const double MAX_DOUBLE = 1e300;
 		const double MIN_DOUBLE = -1e300;
-		const int MAX_INT = INT_MAX;
-		const int MIN_INT = INT_MIN;
+		const int MAX_INT = int((((long int)(1)) << 31) - 1); // INT_MAX;
+		const int MIN_INT = ~MAX_INT; // INT_MIN;
+		const unsigned int MAX_UINT = (unsigned int)(((unsigned long int)(1) << 32) - 1); //4294967295;
+		const unsigned int MIN_UINT = 0;
 		const double EPSILON = 1e-15;
 
 		/**********************************************************************/

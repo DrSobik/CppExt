@@ -839,6 +839,13 @@ int main(int argc, char *argv[]) {
 	
 	out << "Size of unsigned int : " << sizeof(unsigned int) << endl;
 	
+	out << "MAX_INT : " << Math::MAX_INT << endl;
+	out << "MIN_INT : " << Math::MIN_INT << endl;
+	out << "MAX_UINT : " << Math::MAX_UINT << endl;
+	out << "MIN_UINT : " << Math::MIN_UINT << endl;
+	
+	out << "maxGenInt : " << rgmt.getMaxGenInt() << endl;
+	
 	//throw ErrException();
 
 	ThreadRunnable tr1;
