@@ -156,29 +156,31 @@ namespace Common {
 
 		/**********************************************************************/
 
+		/** FP abs */
 		inline double fabs(const double& x) {
-			return std::fabs(x);
+			return (x < 0.0) ? -x : x;//std::fabs(x);
 		}
 
 		/** Integer abs */
-		inline int iabs(int& x) {
-			return abs(x);
-		}
-
-		inline double abs(const double& x) {
-			return fabs(x);
-		}
-
 		inline int abs(const int& x) {
 			return (x < 0) ? -x : x;
 		}
+		
+		/** Integer abs */
+		inline int iabs(const int& x) {
+			return Common::Math::abs(x);
+		}
+
+		inline double abs(const double& x) {
+			return Common::Math::fabs(x);
+		}
 
 		/**********************************************************************/
 
 		/**********************************************************************/
 
-		inline int cmp(const double& x1, const double& x2, const double& eps = EPSILON) {
-			if (abs(x1 - x2) < eps) {
+		inline int cmp(const double& x1, const double& x2, const double& eps = Common::Math::EPSILON) {
+			if (Common::Math::abs(x1 - x2) < eps) {
 				return 0;
 			} else {
 				if (x1 < x2) {
@@ -191,20 +193,15 @@ namespace Common {
 			throw ErrMsgException<Message<>>("Common::MathExt::cmp(const double x1, const double x2, const double eps) failed to compare values!");
 		}
 
-		inline double min(const double& x1, const double& x2) {
-			return std::min(x1, x2);
+		template<class T> inline const T& min(const T& x1, const T& x2) {
+			return (x1 < x2) ? x1 : x2;	//return std::min(x1, x2);
 		}
 
-		inline int min(const int& x1, const int& x2) {
-			return std::min(x1, x2);
-		}
-
-		template <template<class> class V, class T> T& min(V<T>& v) {
+		template <template<class> class V, class T> inline const T& min(const V<T>& v) {
 			int n = v.size();
 
 			if (n == 0) {
-				throw ErrMsgException<Message<>>("Common::MathExt::min(V<T> &v) the input vector is empty!");
-				return T();
+				throw ErrMsgException<Message<>>("Common::MathExt::min(const V<T> &v) the input vector is empty!");
 			}
 
 			if (n == 1) {
@@ -222,11 +219,11 @@ namespace Common {
 			return v[pos];
 		}
 
-		template <template<class> class V, class T> int minIdx(V<T>& v) {
+		template <template<class> class V, class T> inline int minIdx(const V<T>& v) {
 			int n = v.size();
 
 			if (n == 0) {
-				throw ErrMsgException<Message<>>("Common::MathExt::min(V<T> &v) the input vector is empty!");
+				throw ErrMsgException<Message<>>("Common::MathExt::min(const V<T> &v) the input vector is empty!");
 				return -1;
 			}
 
@@ -245,20 +242,15 @@ namespace Common {
 			return pos;
 		}
 
-		inline double max(const double& x1, const double& x2) {
-			return std::max(x1, x2);
+		template<class T> inline const T& max(const T& x1, const T& x2) {
+			return (x1 > x2) ? x1 : x2; //return std::max(x1, x2);
 		}
 
-		inline int max(const int& x1, const int& x2) {
-			return std::max(x1, x2);
-		}
-
-		template <template<class> class V, class T> T& max(V<T>& v) {
+		template <template<class> class V, class T> const T& max(const V<T>& v) {
 			int n = v.size();
 
 			if (n == 0) {
-				throw ErrMsgException<Message<>>("Common::MathExt::max(V<T> &v) the input vector is empty!");
-				return T();
+				throw ErrMsgException<Message<>>("Common::MathExt::max(const V<T> &v) the input vector is empty!");
 			}
 
 			if (n == 1) {
@@ -276,11 +268,11 @@ namespace Common {
 			return v[pos];
 		}
 
-		template <template<class> class V, class T> int maxIdx(V<T>& v) {
+		template <template<class> class V, class T> int maxIdx(const V<T>& v) {
 			int n = v.size();
 
 			if (n == 0) {
-				throw ErrMsgException<Message<>>("Common::MathExt::max(V<T> &v) the input vector is empty!");
+				throw ErrMsgException<Message<>>("Common::MathExt::max(const V<T> &v) the input vector is empty!");
 				return -1;
 			}
 
@@ -375,11 +367,11 @@ namespace Common {
 
 		/**********************************************************************/
 
-		template <template<class> class V, class T> int probSelect(V<T>& prob, const T& probPow = 1.0) {
+		template <template<class> class V, class T> inline int probSelect(const V<T>& prob, const T& probPow = 1.0) {
 			int n = prob.size();
 			T total;
-			V<T> intBegin;
-			V<T> intEnd;
+			vector<T> intBegin;
+			vector<T> intEnd;
 
 			intBegin.resize(n);
 			intEnd.resize(n);
@@ -414,12 +406,12 @@ namespace Common {
 
 			return i;
 		}
-
+		
 		/**********************************************************************/
 
 		/**********************************************************************/
 
-		template <template<class> class V, class T> void randPermut(V<T>& permut) {
+		template <template<class> class V, class T> inline void randPermut(V<T>& permut) {
 			int n = permut.size();
 			int i;
 			int j;
@@ -430,18 +422,18 @@ namespace Common {
 			}
 		}
 
-		template <class T> void randPermut(vector<T>& permut) {
-			int n = permut.size();
-			int i;
-			int j;
+		//template <class T> void randPermut(vector<T>& permut) {
+		//	int n = permut.size();
+		//	int i;
+		//	int j;
 
-			for (i = 1; i < n; i++) {
-				j = qrand() % (i + 1);
-				swap(permut[i], permut[j]);
-			}
-		}
+		//	for (i = 1; i < n; i++) {
+		//		j = qrand() % (i + 1);
+		//		swap(permut[i], permut[j]);
+		//	}
+		//}
 
-		template <template<class> class V, class T> bool nextLexPermutation(V<T>& array) {
+		template <template<class> class V, class T> inline bool nextLexPermutation(V<T>& array) {
 			// Find the non-increasing suffix
 			int length = array.size();
 			int i = length - 1;

@@ -25,6 +25,7 @@
 #include "Operationable"
 #include "SmartPointer"
 #include "MathExt"
+#include "RandExt"
 
 #include <QTextStream>
 #include <QVector>
@@ -37,6 +38,8 @@ using namespace Common;
 using namespace Common::Interfaces;
 using namespace Common::Exceptions;
 using namespace Common::SmartPointers;
+using namespace Common::Rand;
+
 
 class OB1 : public QObject {
 };
@@ -411,8 +414,8 @@ public slots:
 		out << "Running object : " << objectName() << endl;
 
 		double x = 0.00000000000000000000000000000000000000000000001;
-		for (int i = 0 ; i < 100000000 ; i++){
-			x+= sqrt(x)+ pow(x, 0.000001);
+		for (int i = 0; i < 100000000; i++) {
+			x += sqrt(x) + pow(x, 0.000001);
 		}
 
 		out << x << endl;
@@ -784,6 +787,34 @@ int main(int argc, char *argv[]) {
 
 	}
 
+	out << "Max test : " << Math::max(1, 2) << endl;
+	out << "Max test : " << Math::max(1.5, 2.6) << endl;
+	out << "Min test : " << Math::min(1, 2) << endl;
+	out << "Min test : " << Math::min(1.5, 2.6) << endl;
+
+	QVector<double> someDVector;
+	someDVector << 1 << 2 << 3 << 4 << 5.0;
+
+	out << "Min test vector : " << Math::min(someDVector) << endl;
+	out << "Max test vector : " << Math::max(someDVector) << endl;
+
+	Math::randPermut(someDVector);
+
+	Math::nextLexPermutation(someDVector);
+
+	for (int i = 0; i < someDVector.size(); i++) {
+		out << someDVector[i] << ",";
+	}
+	out << endl;
+
+	
+	RandGenMT rgmt(0);
+	
+	for (int i = 0 ; i < 10000 ; i++){
+		out << rgmt.rndFloat() << endl;
+	}
+	
+	
 	//throw ErrException();
 
 	ThreadRunnable tr1;
@@ -792,12 +823,12 @@ int main(int argc, char *argv[]) {
 	tr1.setObjectName("tr 1");
 	//tr2.setObjectName("tr 2");
 
-	tr1.run();
+	//tr1.run();
 	//tr2.run();
 
 	//QObject::connect(&tr1, SIGNAL(sigFinished()), &app, SLOT(quit()));
 	//QObject::connect(&tr2, SIGNAL(sigFinished()), &app, SLOT(quit()));
 
 
-	return 0;//app.exec();
+	return 0; //app.exec();
 }
