@@ -39,6 +39,10 @@ namespace Common {
 				setSeeds(someSeeds);
 			}
 
+			RandGen(const unsigned int& someSeed) {
+				setSeed(someSeed);
+			}
+			
 			virtual void init() = 0; // Set the generator into the initial state
 
 		public:

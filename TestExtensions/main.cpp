@@ -815,7 +815,7 @@ int main(int argc, char *argv[]) {
 	}
 	
 	unsigned int numRndClasses = 100;
-	unsigned int numRndTests = 500000000;
+	unsigned int numRndTests = 5000000;
 	vector<double> testFreqs(numRndClasses);
 	
 	for (unsigned int i = 0 ; i < numRndClasses ; i++){
