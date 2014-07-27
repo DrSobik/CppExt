@@ -101,8 +101,9 @@ namespace Common {
 			/** Generate a random integer out of [a,b]. */
 			unsigned int rndInt(const unsigned int& a, const unsigned int& b) {
 				unsigned int rndInteger = rndInt();
-				// IMPORTANT!!! We generate a random double out of [a - 0.5; b + 0.5] to make equal selection probabilities when rounding! Otherwise the probability of selecting a or b it twice smaller than it should be.
-				return (unsigned int) Math::round ( double(a - 0.5) + double (rndInteger) / double (maxGenInt) * double (b + 0.5 - (a - 0.5)));
+				// IMPORTANT!!! We generate a random double out of [a - 0.5; b + 0.5] to make equal selection probabilities when rounding! Otherwise the probability of selecting a or b is twice smaller than it should be.
+				// IMPORTANT!!! Constant 0.499999999999999 is used instead of 0.5 to avoid incorrect rounding of a-0.5 to a-1 and b+0.5 to b+1;
+				return (unsigned int) Math::round ( double(a - 0.499999999999999) + double (rndInteger) / double (maxGenInt) * double (b + 0.499999999999999 - (a - 0.499999999999999)));
 			}
 
 		};

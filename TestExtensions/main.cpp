@@ -814,7 +814,7 @@ int main(int argc, char *argv[]) {
 		out << rgmt.rndFloat() << endl;
 	}
 	
-	unsigned int numRndClasses = 100;
+	unsigned int numRndClasses = 10;
 	unsigned int numRndTests = 5000000;
 	vector<double> testFreqs(numRndClasses);
 	
@@ -837,13 +837,20 @@ int main(int argc, char *argv[]) {
 	out << endl;
 	out << "sumFreq : " << sumFreq << endl;
 	
-	out << "Size of unsigned int : " << sizeof(unsigned int) << endl;
+	out << "Size of unsigned int : " << sizeof(long int) << endl;
 	
 	out << "MAX_INT : " << Math::MAX_INT << endl;
 	out << "MIN_INT : " << Math::MIN_INT << endl;
 	out << "MAX_UINT : " << Math::MAX_UINT << endl;
 	out << "MIN_UINT : " << Math::MIN_UINT << endl;
-	
+	out << "MAX_INT64 : " << Math::MAX_INT64 << endl;
+	out << "MIN_INT64 : " << Math::MIN_INT64 << endl;
+	out << "MAX_UINT64 : " << Math::MAX_UINT64 << endl;
+	out << "MIN_UINT64 : " << Math::MIN_UINT64 << endl;
+	out << "MAX_INT16 : " << Math::MAX_INT16 << endl;
+	out << "MIN_INT16 : " << Math::MIN_INT16 << endl;
+	out << "MAX_UINT16 : " << Math::MAX_UINT16 << endl;
+	out << "MIN_UINT16 : " << Math::MIN_UINT16 << endl;	
 	out << "maxGenInt : " << rgmt.getMaxGenInt() << endl;
 	
 	//throw ErrException();
