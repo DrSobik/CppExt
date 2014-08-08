@@ -27,10 +27,14 @@
 #include "MathExt"
 #include "RandExt"
 
+#include "../Sender/Sender.h"
+
 #include <QTextStream>
 #include <QVector>
 
 #include <string>
+#include <QtCore/qobjectdefs.h>
+#include <QtCore/qobject.h>
 
 using namespace std;
 
@@ -39,7 +43,6 @@ using namespace Common::Interfaces;
 using namespace Common::Exceptions;
 using namespace Common::SmartPointers;
 using namespace Common::Rand;
-
 
 class OB1 : public QObject {
 };
@@ -526,7 +529,209 @@ public:
 
 };
 
+class Evt1 {
+};
+
+class Evt2 {
+};
+
+class Evt3 : public Evt1 {
+};
+
+class EvtReceiver : public Object<QObject>, ReceiverOf<Evt1>, ReceiverOf<Evt2>, ReceiverOf<Evt3> {
+
+	Q_OBJECT
+
+public:
+
+	EvtReceiver() {
+	}
+
+	EvtReceiver(const EvtReceiver&other) : BasicObject(other), Object(other), ReceiverOf<Evt1>(), ReceiverOf<Evt2>(), ReceiverOf<Evt3>() {
+	}
+
+	virtual ~EvtReceiver() {
+	}
+
+public slots:
+
+	virtual void receive(Evt1*) {
+
+		QTextStream out(stdout);
+
+		out << "EvtReceiver::receive : Evt1" << endl;
+
+	}
+
+	virtual void receive(Evt2*) {
+
+		QTextStream out(stdout);
+
+		out << "EvtReceiver::receive : Evt2" << endl;
+
+	}
+
+	virtual void receive(Evt3*) {
+
+		QTextStream out(stdout);
+
+		out << "EvtReceiver::receive : Evt3" << endl;
+
+	}
+
+};
+
+
+// The Qt Sender API which uses signals and slots
+
+class QtSenderAPI : public QObject, SenderAPI<Evt1>, SenderAPI<Evt2>, SenderAPI<Evt3> {
+
+	Q_OBJECT
+
+public:
+
+	QtSenderAPI() {
+
+	}
+
+	QtSenderAPI(const QtSenderAPI& other) : QObject((QObject*) & other), SenderAPI<Evt1>(), SenderAPI<Evt2>(), SenderAPI<Evt3>() {
+
+	}
+
+	// Evt1
+
+	virtual void addReceiver(const ReceiverOf<Evt1>& receiver) {
+		QObject::connect(this, SIGNAL(sigEvt(Evt1*)), (EvtReceiver*) & receiver, SLOT(receive(Evt1*)));
+	}
+
+	virtual void removeReceiver(const ReceiverOf<Evt1>& receiver) {
+		QObject::disconnect(this, SIGNAL(sigEvt(Evt1*)), (EvtReceiver*) & receiver, SLOT(receive(Evt1*)));
+	}
+
+	virtual void removeAllReceiversOf(const Evt1&) {
+		QObject::disconnect(SIGNAL(sigEvt(Evt1*)));
+	}
+	
+	virtual void send(Evt1* evt) {
+		emit sigEvt(evt);
+	}
+
+	// Evt2
+
+	virtual void addReceiver(const ReceiverOf<Evt2>& receiver) {
+		QObject::connect(this, SIGNAL(sigEvt(Evt2*)), (EvtReceiver*) & receiver, SLOT(receive(Evt2*)));
+	}
+
+	virtual void removeReceiver(const ReceiverOf<Evt2>& receiver) {
+		QObject::disconnect(this, SIGNAL(sigEvt(Evt2*)), (EvtReceiver*) & receiver, SLOT(receive(Evt2*)));
+	}
+	
+	virtual void removeAllReceiversOf(const Evt2&){
+		QObject::disconnect(SIGNAL(sigEvt(Evt2*)));
+	}
+
+	virtual void send(Evt2* evt) {
+		emit sigEvt(evt);
+	}
+
+	// Evt3
+
+	virtual void addReceiver(const ReceiverOf<Evt3>& receiver) {
+		QObject::connect(this, SIGNAL(sigEvt(Evt3*)), (EvtReceiver*) & receiver, SLOT(receive(Evt3*)));
+	}
+
+	virtual void removeReceiver(const ReceiverOf<Evt3>& receiver) {
+		QObject::disconnect(this, SIGNAL(sigEvt(Evt3*)), (EvtReceiver*) & receiver, SLOT(receive(Evt3*)));
+	}
+
+	virtual void removeAllReceiversOf(const Evt3&){
+		QObject::disconnect(SIGNAL(sigEvt(Evt3*)));
+	}
+	
+	virtual void send(Evt3* evt) {
+		emit sigEvt(evt);
+	}
+
+
+signals:
+	void sigEvt(Evt1*);
+	void sigEvt(Evt2*);
+	void sigEvt(Evt3*);
+
+};
+
+template<class T> class OtherSenderAPI : public DefaultSenderAPI<T> {
+
+public : 
+
+	virtual void send(T* evt) {
+		qDebug("Some other sender API...");
+		DefaultSenderAPI<T>::send(evt);
+	}
+	
+};
+
+class EvtSender : public Object<QObject>, public SenderOf<Evt1, QtSenderAPI>, public SenderOf<Evt2>, public SenderOf<Evt3, OtherSenderAPI<Evt3>> {
+public:
+
+	EvtSender() {
+
+	}
+
+	EvtSender(const EvtSender & other) : BasicObject(other), Object(other), SenderOf<Evt1, QtSenderAPI>(other), SenderOf<Evt2>(other), SenderOf<Evt3, OtherSenderAPI<Evt3>>(other) {
+
+	}
+
+	virtual ~EvtSender() {
+
+	}
+
+
+	// Unhide the inherited methods
+
+	// Evt1
+	using SenderOf<Evt1, QtSenderAPI>::addReceiver;
+	using SenderOf<Evt1, QtSenderAPI>::removeReceiver;
+	using SenderOf<Evt1, QtSenderAPI>::removeAllReceiversOf;
+	using SenderOf<Evt1, QtSenderAPI>::send;
+
+	// Evt2
+	using SenderOf<Evt2>::addReceiver;
+	using SenderOf<Evt2>::removeReceiver;
+	using SenderOf<Evt2>::removeAllReceiversOf;
+	using SenderOf<Evt2>::send;
+
+	// Evt3
+	using SenderOf<Evt3, OtherSenderAPI<Evt3>>::addReceiver;
+	using SenderOf<Evt3, OtherSenderAPI<Evt3>>::removeReceiver;
+	using SenderOf<Evt3, OtherSenderAPI<Evt3>>::removeAllReceiversOf;
+	using SenderOf<Evt3, OtherSenderAPI<Evt3>>::send;
+
+};
+
+
 #include "main.moc"
+
+template<class T> void foo(T r) {
+	++r;
+}
+
+void senderReceiverTest() {
+	EvtSender sender;
+	EvtReceiver receiver;
+
+	sender.addReceiver((ReceiverOf<Evt1>&)receiver);
+	sender.addReceiver((ReceiverOf<Evt2>&)receiver);
+	sender.addReceiver((ReceiverOf<Evt3>&)receiver);
+	
+	//sender.removeReceiver((ReceiverOf<Evt1>&)receiver);
+	sender.removeAllReceiversOf(Evt3());
+
+	sender.send((Evt1*) NULL);
+	sender.send((Evt2*) NULL);
+	sender.send((Evt3*) NULL);
+
+}
 
 int main(int argc, char *argv[]) {
 	// initialize resources, if needed
@@ -807,38 +1012,38 @@ int main(int argc, char *argv[]) {
 	}
 	out << endl;
 
-	
+
 	RandGenMT rgmt(1872638163);
-	
-	for (int i = 0 ; i < 10000 ; i++){
+
+	for (int i = 0; i < 10000; i++) {
 		out << rgmt.rndFloat() << endl;
 	}
-	
+
 	unsigned int numRndClasses = 10;
 	unsigned int numRndTests = 5000000;
 	vector<double> testFreqs(numRndClasses);
-	
-	for (unsigned int i = 0 ; i < numRndClasses ; i++){
+
+	for (unsigned int i = 0; i < numRndClasses; i++) {
 		testFreqs[i] = 0;
 	}
-	for (unsigned int i = 0 ; i < numRndTests ; i++){
+	for (unsigned int i = 0; i < numRndTests; i++) {
 		unsigned int curIdx = rgmt.rndInt(1, numRndClasses);
-		
+
 		testFreqs[curIdx - 1]++;
 	}
 	double sumFreq = 0.0;
-	for (unsigned int i = 0 ; i < numRndClasses ; i++){
-		testFreqs[i]/=double(numRndTests);
-		
-		sumFreq+= testFreqs[i];
-		
+	for (unsigned int i = 0; i < numRndClasses; i++) {
+		testFreqs[i] /= double(numRndTests);
+
+		sumFreq += testFreqs[i];
+
 		out << testFreqs[i] << " ";
 	}
 	out << endl;
 	out << "sumFreq : " << sumFreq << endl;
-	
-	out << "Size of unsigned int : " << sizeof(long int) << endl;
-	
+
+	out << "Size of unsigned int : " << sizeof (long int) << endl;
+
 	out << "MAX_INT : " << Math::MAX_INT << endl;
 	out << "MIN_INT : " << Math::MIN_INT << endl;
 	out << "MAX_UINT : " << Math::MAX_UINT << endl;
@@ -850,9 +1055,20 @@ int main(int argc, char *argv[]) {
 	out << "MAX_INT16 : " << Math::MAX_INT16 << endl;
 	out << "MIN_INT16 : " << Math::MIN_INT16 << endl;
 	out << "MAX_UINT16 : " << Math::MAX_UINT16 << endl;
-	out << "MIN_UINT16 : " << Math::MIN_UINT16 << endl;	
+	out << "MIN_UINT16 : " << Math::MIN_UINT16 << endl;
 	out << "maxGenInt : " << rgmt.getMaxGenInt() << endl;
-	
+
+	for (int i = 0; i < 5; ++i) {
+		out << i << endl;
+	}
+	{
+		int i = 10;
+		foo(&i);
+		out << "i = " << i << endl;
+	}
+
+	senderReceiverTest();
+
 	//throw ErrException();
 
 	ThreadRunnable tr1;
