@@ -16,7 +16,9 @@ namespace Common {
 
 		/**********************************************************************/
 
-		template<class T> class ReceiverOf {
+		template<class T> 
+		class ReceiverOf {
+		
 		private:
 
 			ReceiverOf(const ReceiverOf&){}
@@ -37,7 +39,8 @@ namespace Common {
 		/**********************************************************************/
 
 		/** Interface for Sender API. */
-		template<class T> class SenderAPI {
+		template<class T> 
+		class SenderAPI {
 			
 		private:
 			
@@ -50,12 +53,15 @@ namespace Common {
 			
 		public:
 
+			/** Add a receiver for the published something. */
 			virtual void addReceiver(const ReceiverOf<T>& receiver) = 0;
 
+			/** Remove a receiver of the published something. */
 			virtual void removeReceiver(const ReceiverOf<T>& receiver) = 0;
 
 			virtual void removeAllReceiversOf(const T&) = 0;
 			
+			/** Send what must be sent. */
 			virtual void send(T* evt) = 0;
 		};
 
@@ -64,9 +70,13 @@ namespace Common {
 		/**********************************************************************/
 
 		/** How the messages are dispatched by default : iterate over all receivers. */
-		template<class T> class DefaultSenderAPI : SenderAPI<T> {
+		template<class T, class receiverT = ReceiverOf<T>, class contT = std::set<receiverT*>> 
+		class DefaultSenderAPI : SenderAPI<T> {
+		
 		protected:
-			std::set<ReceiverOf<T>*> receivers; // Objects which will receive something
+		
+			contT receivers; // Objects which will receive something
+		
 		public:
 
 			DefaultSenderAPI() : SenderAPI<T>(){}
@@ -75,12 +85,12 @@ namespace Common {
 			}
 			virtual ~DefaultSenderAPI(){}
 			
-			virtual void addReceiver(const ReceiverOf<T>& receiver) {
-				receivers.insert((ReceiverOf<T>*) & receiver);
+			virtual void addReceiver(const receiverT& receiver) {
+				receivers.insert((receiverT*) & receiver);
 			}
 
-			virtual void removeReceiver(const ReceiverOf<T>& receiver) {
-				receivers.erase((ReceiverOf<T>*) & receiver);
+			virtual void removeReceiver(const receiverT& receiver) {
+				receivers.erase((receiverT*) & receiver);
 			}
 
 			virtual void removeAllReceiversOf(const T&){
@@ -88,7 +98,7 @@ namespace Common {
 			}
 			
 			virtual void send(T* evt) {
-				for (ReceiverOf<T>* curReceiver : receivers) {
+				for (receiverT* curReceiver : receivers) {
 					curReceiver->receive(evt);
 				}
 			}
@@ -98,8 +108,11 @@ namespace Common {
 
 		/**********************************************************************/
 
-		template<class T, class senderAPI = DefaultSenderAPI<T>> class SenderOf {
+		template<class T, class senderAPI = DefaultSenderAPI<T>> 
+		class SenderOf {
+		
 		private:
+		
 			senderAPI sender;
 
 		protected:
@@ -110,12 +123,10 @@ namespace Common {
 			
 		public:
 
-			/** Add a receiver for the published something. */
 			void addReceiver(const ReceiverOf<T>& receiver) {
 				sender.addReceiver(receiver);
 			}
 
-			/** Remove a receiver of the published something. */
 			void removeReceiver(const ReceiverOf<T>& receiver) {
 				sender.removeReceiver(receiver);
 			}
@@ -124,7 +135,6 @@ namespace Common {
 				sender.removeAllReceiversOf(evt);
 			}
 			
-			/** Send what must be sent. */
 			void send(T* evt) {
 				sender.send(evt);
 			}
