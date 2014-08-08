@@ -39,25 +39,25 @@ namespace Common {
 		/**********************************************************************/
 
 		/** Interface for Sender API. */
-		template<class T> 
-		class SenderAPI {
+		template<class T, class receiverT = ReceiverOf<T>> 
+		class SenderOf {
 			
 		private:
 			
-			SenderAPI(const SenderAPI&){}
+			SenderOf(const SenderOf&){}
 			
 		protected:	
 			
-			SenderAPI(){}
-			virtual ~SenderAPI(){}
+			SenderOf(){}
+			virtual ~SenderOf(){}
 			
 		public:
 
 			/** Add a receiver for the published something. */
-			virtual void addReceiver(const ReceiverOf<T>& receiver) = 0;
+			virtual void addReceiver(const receiverT& receiver) = 0;
 
 			/** Remove a receiver of the published something. */
-			virtual void removeReceiver(const ReceiverOf<T>& receiver) = 0;
+			virtual void removeReceiver(const receiverT& receiver) = 0;
 
 			virtual void removeAllReceiversOf(const T&) = 0;
 			
@@ -71,7 +71,7 @@ namespace Common {
 
 		/** How the messages are dispatched by default : iterate over all receivers. */
 		template<class T, class receiverT = ReceiverOf<T>, class contT = std::set<receiverT*>> 
-		class DefaultSenderAPI : SenderAPI<T> {
+		class DefaultSenderOf : SenderOf<T, receiverT> {
 		
 		protected:
 		
@@ -79,11 +79,11 @@ namespace Common {
 		
 		public:
 
-			DefaultSenderAPI() : SenderAPI<T>(){}
-			DefaultSenderAPI(const DefaultSenderAPI& other) : SenderAPI<T>(){
+			DefaultSenderOf() : SenderOf<T, receiverT>(){}
+			DefaultSenderOf(const DefaultSenderOf& other) : SenderOf<T, receiverT>(){
 				receivers = other.receivers;
 			}
-			virtual ~DefaultSenderAPI(){}
+			virtual ~DefaultSenderOf(){}
 			
 			virtual void addReceiver(const receiverT& receiver) {
 				receivers.insert((receiverT*) & receiver);
@@ -102,43 +102,6 @@ namespace Common {
 					curReceiver->receive(evt);
 				}
 			}
-		};
-
-		/**********************************************************************/
-
-		/**********************************************************************/
-
-		template<class T, class senderAPI = DefaultSenderAPI<T>> 
-		class SenderOf {
-		
-		private:
-		
-			senderAPI sender;
-
-		protected:
-
-			SenderOf(){}
-			SenderOf(const SenderOf& other) : sender(other.sender){}
-			virtual ~SenderOf(){}
-			
-		public:
-
-			void addReceiver(const ReceiverOf<T>& receiver) {
-				sender.addReceiver(receiver);
-			}
-
-			void removeReceiver(const ReceiverOf<T>& receiver) {
-				sender.removeReceiver(receiver);
-			}
-			
-			void removeAllReceiversOf(const T& evt) {
-				sender.removeAllReceiversOf(evt);
-			}
-			
-			void send(T* evt) {
-				sender.send(evt);
-			}
-
 		};
 
 		/**********************************************************************/
