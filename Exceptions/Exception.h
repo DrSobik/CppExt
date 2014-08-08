@@ -18,7 +18,7 @@ namespace Common {
 
 		/**********************************************************************/
 		
-		template<class senderT = BasicObject, class... Ts> class Exception : public Ts... {
+		template<class senderT = BasicObject, class baseExceptionT = std::exception, class... Ts> class Exception : public baseExceptionT, public Ts... {
 		private:
 			
 			senderT* sender; // A pointer to the object which raised the exception
