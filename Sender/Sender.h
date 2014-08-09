@@ -98,7 +98,7 @@ namespace Common {
 			}
 			
 			virtual void send(T* evt) {
-				for (receiverT* curReceiver : receivers) {
+				for (auto curReceiver : receivers) {
 					curReceiver->receive(evt);
 				}
 			}
