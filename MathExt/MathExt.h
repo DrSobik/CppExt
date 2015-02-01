@@ -26,15 +26,15 @@ namespace Common {
 		typedef short int int16; // 16 bit
 		typedef int int32; // 32 bit
 		typedef long long int int64; // 64 bit
-		
+
 		typedef unsigned short uint16; // 16 bit
 		typedef unsigned int uint32; // 32 bit
 		typedef unsigned long long int uint64; // 64 bit
-		
+
 		/**********************************************************************/
-		
+
 		/**********************************************************************/
-		
+
 		int rSeed = 0; // Initial seed 
 
 		const double E = 2.71828182845904523536028747135266249775724709369995; //M_E;
@@ -43,14 +43,14 @@ namespace Common {
 		const double MAX_DOUBLE = 1e300;
 		const double MIN_DOUBLE = -1e300;
 		const double EPSILON = 1e-15;
-		
+
 		const int16 MAX_INT16 = int16((uint16(1) << 15) - 1); // 32767
 		const int16 MIN_INT16 = ~MAX_INT16; // -32768
 		const int32 MAX_INT = int32((uint32(1) << 31) - 1); // 2147483647
 		const int32 MIN_INT = ~MAX_INT; // -2147483648
 		const int64 MAX_INT64 = int64((uint64(1) << 63) - 1); // 9223372036854775807
 		const int64 MIN_INT64 = ~MAX_INT64; // -9223372036854775808
-		
+
 		const uint16 MAX_UINT16 = uint16((uint32(1) << 16) - 1); // 65535
 		const uint16 MIN_UINT16 = 0;
 		const uint32 MAX_UINT = uint32((uint64(1) << 32) - 1); // 4294967295
@@ -58,6 +58,10 @@ namespace Common {
 		const uint64 MAX_UINT64 = uint64(((uint64(1) << 63) - 1) << 1) + 1; // 18446744073709551615
 		const uint64 MIN_UINT64 = 0;
 
+		/**********************************************************************/
+
+		/**********************************************************************/
+		int cmp(const double& x1, const double& x2, const double& eps);
 		/**********************************************************************/
 
 		/**********************************************************************/
@@ -181,14 +185,14 @@ namespace Common {
 
 		/** FP abs */
 		inline double fabs(const double& x) {
-			return (x < 0.0) ? -x : x;//std::fabs(x);
+			return (x < 0.0) ? -x : x; //std::fabs(x);
 		}
 
 		/** Integer abs */
 		inline int abs(const int& x) {
 			return (x < 0) ? -x : x;
 		}
-		
+
 		/** Integer abs */
 		inline int iabs(const int& x) {
 			return Common::Math::abs(x);
@@ -217,7 +221,7 @@ namespace Common {
 		}
 
 		template<class T> inline const T& min(const T& x1, const T& x2) {
-			return (x1 < x2) ? x1 : x2;	//return std::min(x1, x2);
+			return (x1 < x2) ? x1 : x2; //return std::min(x1, x2);
 		}
 
 		template <template<class> class V, class T> inline const T& min(const V<T>& v) {
@@ -375,7 +379,7 @@ namespace Common {
 		/**********************************************************************/
 
 		inline double round(const double& x) {
-			return std::round(x);//std::floor(x + 0.5);
+			return std::round(x); //std::floor(x + 0.5);
 		}
 
 		inline double ceil(const double& x) {
@@ -429,12 +433,12 @@ namespace Common {
 
 			return i;
 		}
-		
-		/**********************************************************************/
 
 		/**********************************************************************/
 
-		template <template<class> class V, class T> inline void randPermut(V<T>& permut) {
+		/**********************************************************************/
+
+		template <template<class, class...> class V, class T, class... otherT> inline void randPermut(V<T, otherT...>& permut) {
 			int n = permut.size();
 			int i;
 			int j;
@@ -444,6 +448,19 @@ namespace Common {
 				swap(permut[i], permut[j]);
 			}
 		}
+
+		/*
+		template <template<class,class> class V, class VA, class T> inline void randPermut(V<T,VA>& permut) {
+			int n = permut.size();
+			int i;
+			int j;
+
+			for (i = 1; i < n; i++) {
+				j = qrand() % (i + 1);
+				swap(permut[i], permut[j]);
+			}
+		}
+		 */
 
 		//template <class T> void randPermut(vector<T>& permut) {
 		//	int n = permut.size();
@@ -456,7 +473,7 @@ namespace Common {
 		//	}
 		//}
 
-		template <template<class> class V, class T> inline bool nextLexPermutation(V<T>& array) {
+		template <template<class, class...> class V, class T, class... otherT> inline bool nextLexPermutation(V<T, otherT...>& array) {
 			// Find the non-increasing suffix
 			int length = array.size();
 			int i = length - 1;
