@@ -224,7 +224,7 @@ namespace Common {
 			return (x1 < x2) ? x1 : x2; //return std::min(x1, x2);
 		}
 
-		template <template<class> class V, class T> inline const T& min(const V<T>& v) {
+		template <template<class, class...> class V, class T, class... otherT> inline const T& min(const V<T, otherT...>& v) {
 			int n = v.size();
 
 			if (n == 0) {
@@ -246,7 +246,7 @@ namespace Common {
 			return v[pos];
 		}
 
-		template <template<class> class V, class T> inline int minIdx(const V<T>& v) {
+		template <template<class, class...> class V, class T, class... otherT> inline int minIdx(const V<T, otherT...>& v) {
 			int n = v.size();
 
 			if (n == 0) {
@@ -273,7 +273,7 @@ namespace Common {
 			return (x1 > x2) ? x1 : x2; //return std::max(x1, x2);
 		}
 
-		template <template<class> class V, class T> const T& max(const V<T>& v) {
+		template <template<class, class...> class V, class T, class... otherT> const T& max(const V<T, otherT...>& v) {
 			int n = v.size();
 
 			if (n == 0) {
@@ -295,7 +295,7 @@ namespace Common {
 			return v[pos];
 		}
 
-		template <template<class> class V, class T> int maxIdx(const V<T>& v) {
+		template <template<class, class...> class V, class T, class... otherT> int maxIdx(const V<T, otherT...>& v) {
 			int n = v.size();
 
 			if (n == 0) {
@@ -394,7 +394,7 @@ namespace Common {
 
 		/**********************************************************************/
 
-		template <template<class> class V, class T> inline int probSelect(const V<T>& prob, const T& probPow = 1.0) {
+		template <template<class, class...> class V, class T, class... otherT> inline int probSelect(const V<T, otherT...>& prob, const T& probPow = 1.0) {
 			int n = prob.size();
 			T total;
 			vector<T> intBegin;
