@@ -15,7 +15,7 @@
 #ifndef ACOMPARABLE_H
 #define	ACOMPARABLE_H
 
-#include "Debug.h"
+#include "DebugExt.h"
 
 namespace Common {
 

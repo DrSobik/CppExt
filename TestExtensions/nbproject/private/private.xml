@@ -7,16 +7,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/DrSobik/Projects/Common/Clonable/Clonable.h</file>
-            <file>file:/home/DrSobik/Projects/Common/SmartPointer/SmartPointer.h</file>
-            <file>file:/home/DrSobik/Projects/Common/Object/Object.h</file>
-            <file>file:/home/DrSobik/Projects/Common/Operationable/Operationable.h</file>
-            <file>file:/home/DrSobik/Projects/Common/Comparable/Comparable.h</file>
-            <file>file:/home/DrSobik/Projects/Common/Exceptions/MsgException.h</file>
             <file>file:/home/DrSobik/Projects/Common/TestExtensions/main.cpp</file>
-            <file>file:/home/DrSobik/Projects/Common/Exceptions/Exception.h</file>
-            <file>file:/home/DrSobik/Projects/Common/Assignable/Assignable.h</file>
-            <file>file:/home/DrSobik/Projects/Common/Functor/Functor.h</file>
+        </group>
+        <group name="Common">
+            <file>file:/data/Projects/Common/TestExtensions/main.cpp</file>
+            <file>file:/data/Projects/Common/Functor/Functor.h</file>
+            <file>file:/data/Projects/Common/Include/Exceptions</file>
+            <file>file:/data/Projects/Common/Include/MathExt</file>
+            <file>file:/data/Projects/Common/RandExt/RandExt.h</file>
+            <file>file:/data/Projects/Common/MathExt/MathExt.h</file>
         </group>
     </open-files>
 </project-private>

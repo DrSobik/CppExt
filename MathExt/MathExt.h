@@ -35,8 +35,6 @@ namespace Common {
 
 		/**********************************************************************/
 
-		int rSeed = 0; // Initial seed 
-
 		const double E = 2.71828182845904523536028747135266249775724709369995; //M_E;
 		const double Pi = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679; //M_PI;
 		const double Pi_2 = Pi / 2.0; //M_PI_2;
@@ -61,11 +59,75 @@ namespace Common {
 		/**********************************************************************/
 
 		/**********************************************************************/
-		int cmp(const double& x1, const double& x2, const double& eps);
+		template<class T> void swap(T& x, T& y);
+		
+		double pow(const double& x, const double& p);
+		double pow(const double& x, const int& p);
+		double sqr(const double& x);
+		double sqrt(const double& x);
+		double exp(const double& x);
+		
+		double lg(const double& x);
+		double ln(const double& x);
+		double log(const double& base, const double& x);
+		
+		double sin(const double& x);
+		double cos(const double& x);
+		double tan(const double& x);
+		double cot(const double& x);
+		
+		double arcsin(const double& x);
+		double arccos(const double& x);
+		double arctan(const double& x);
+		double arccot(const double& x);
+		
+		int iabs(const int& x);
+		double fabs(const double& x);
+		int abs(const int& x);
+		double abs(const double& x);
+		
+		int cmp(const double& x1, const double& x2, const double& eps = Common::Math::EPSILON);
+		
+		template<class T> const T& min(const T& x1, const T& x2);
+		template <template<class, class...> class V, class T, class... otherT> const T& min(const V<T, otherT...>& v);
+		template <template<class, class...> class V, class T, class... otherT> int minIdx(const V<T, otherT...>& v);
+		
+		template<class T> const T& max(const T& x1, const T& x2);
+		template <template<class, class...> class V, class T, class... otherT> const T& max(const V<T, otherT...>& v);
+		template <template<class, class...> class V, class T, class... otherT> int maxIdx(const V<T, otherT...>& v);
+		
+		template <template<class, class...> class V, class T, class... otherT> T& sum(V<T, otherT...>& v);
+		
+		template <template<class, class...> class V, class T, class... otherT> void sort(V<T,otherT...>& v, const bool& asc = true);
+		template <template<class, class...> class V, class T, class... otherT> void stableSort(V<T,otherT...>& v, const bool& asc = true);
+		
+		template <template<class, class...> class V, class T, class... otherT> void reverseVec(V<T,otherT...>& v);
+		
+		double round(const double& x);
+		double ceil(const double& x);
+		double floor(const double& x);
+		
+		template <template<class, class...> class V, class T, class... otherT> bool nextLexPermutation(V<T, otherT...>& array);
+		
+		unsigned long long int factorial(const int& n);
 		/**********************************************************************/
 
 		/**********************************************************************/
 
+		/**********************************************************************/ 
+		
+		template<class T> void swap(T& x, T& y){
+			T z = x;
+			
+			x = y;
+			
+			y = z;
+		}
+		
+		/**********************************************************************/
+		
+		/**********************************************************************/
+		
 		inline double pow(const double& x, const double& p) {
 			return std::pow(x, p);
 		}
@@ -79,7 +141,7 @@ namespace Common {
 		}
 
 		inline double sqrt(const double& x) {
-#ifdef DEBUG
+#ifndef MATHEXT_NO_CHECKS
 			if (x < 0.0) throw ErrMsgException<Message<>>("Common::MathExt::sqrt(const double x) negative argument!");
 #endif
 			return std::sqrt(x);
@@ -94,46 +156,25 @@ namespace Common {
 		/**********************************************************************/
 
 		inline double lg(const double& x) {
-#ifdef DEBUG
+#ifndef MATHEXT_NO_CHECKS
 			if (cmp(x, 0.0, EPSILON) <= 0) throw ErrMsgException<Message<>>("Common::MathExt::lg(const double x) small/negative argument!");
 #endif
 			return std::log10(x);
 		}
 
 		inline double ln(const double& x) {
-#ifdef DEBUG
+#ifndef MATHEXT_NO_CHECKS
 			if (cmp(x, 0.0, EPSILON) <= 0) throw ErrMsgException<Message<>>("Common::MathExt::ln(const double x) small/negative argument!");
 #endif
 			return std::log(x);
 		}
 
 		inline double log(const double& base, const double& x) {
-#ifdef DEBUG
+#ifndef MATHEXT_NO_CHECKS
 			if (cmp(x, 0.0, EPSILON) <= 0) throw ErrMsgException<Message<>>("Common::MathExt::lg(const double x) small/negative argument!");
 			if (cmp(base, 0.0, EPSILON) <= 0) throw ErrMsgException<Message<>>("Common::MathExt::lg(const double x) small/negative base!");
 #endif
 			return ln(x) / ln(base);
-		}
-
-		/**********************************************************************/
-
-		/**********************************************************************/
-
-		template <template<class> class V, class T> T& sum(V<T>& v) {
-			int n = v.size();
-
-			if (n == 0) {
-				throw ErrMsgException<Message<>>("Common::MathExt::sum(V<T>& v) : Summing an empty vector!!!");
-				return T();
-			}
-
-			T res = v[0];
-
-			for (int i = 1; i < n; i++) {
-				res = res + v[i];
-			}
-
-			return res;
 		}
 
 		/**********************************************************************/
@@ -149,14 +190,14 @@ namespace Common {
 		}
 
 		inline double tan(const double& x) {
-#ifdef DEBUG
+#ifndef MATHEXT_NO_CHECKS
 			if ((cmp(round(x / Pi_2), x / Pi_2, EPSILON) == 0) && (cmp(round(x / Pi), x / Pi, EPSILON) != 0)) throw ErrMsgException<Message<>>("Common::MathExt::tan(const double x) argument is multiplicity of Pi/2 !");
 #endif
 			return std::tan(x);
 		}
 
 		inline double cot(const double& x) {
-#ifdef DEBUG
+#ifndef MATHEXT_NO_CHECKS
 			if (cmp(round(x / Pi), x / Pi, EPSILON) == 0) throw ErrMsgException<Message<>>("Common::MathExt::cot(const double x) argument is multiplicity of Pi !");
 			if (cmp(round(x / Pi_2), x / Pi_2, EPSILON) == 0) throw ErrMsgException<Message<>>("Common::MathExt::cot(const double x) argument is multiplicity of Pi/2 !");
 #endif
@@ -183,6 +224,11 @@ namespace Common {
 
 		/**********************************************************************/
 
+		/** Integer abs */
+		inline int iabs(const int& x) {
+			return Common::Math::abs(x);
+		}
+		
 		/** FP abs */
 		inline double fabs(const double& x) {
 			return (x < 0.0) ? -x : x; //std::fabs(x);
@@ -193,11 +239,6 @@ namespace Common {
 			return (x < 0) ? -x : x;
 		}
 
-		/** Integer abs */
-		inline int iabs(const int& x) {
-			return Common::Math::abs(x);
-		}
-
 		inline double abs(const double& x) {
 			return Common::Math::fabs(x);
 		}
@@ -206,7 +247,7 @@ namespace Common {
 
 		/**********************************************************************/
 
-		inline int cmp(const double& x1, const double& x2, const double& eps = Common::Math::EPSILON) {
+		inline int cmp(const double& x1, const double& x2, const double& eps) {
 			if (Common::Math::abs(x1 - x2) < eps) {
 				return 0;
 			} else {
@@ -220,16 +261,21 @@ namespace Common {
 			throw ErrMsgException<Message<>>("Common::MathExt::cmp(const double x1, const double x2, const double eps) failed to compare values!");
 		}
 
+		
 		template<class T> inline const T& min(const T& x1, const T& x2) {
 			return (x1 < x2) ? x1 : x2; //return std::min(x1, x2);
 		}
 
 		template <template<class, class...> class V, class T, class... otherT> inline const T& min(const V<T, otherT...>& v) {
 			int n = v.size();
-
+			
+#ifndef MATHEXT_NO_CHECKS
+			
 			if (n == 0) {
 				throw ErrMsgException<Message<>>("Common::MathExt::min(const V<T> &v) the input vector is empty!");
 			}
+
+#endif			
 
 			if (n == 1) {
 				return v[0];
@@ -276,10 +322,14 @@ namespace Common {
 		template <template<class, class...> class V, class T, class... otherT> const T& max(const V<T, otherT...>& v) {
 			int n = v.size();
 
+#ifndef MATHEXT_NO_CHECKS			
+			
 			if (n == 0) {
 				throw ErrMsgException<Message<>>("Common::MathExt::max(const V<T> &v) the input vector is empty!");
 			}
 
+#endif			
+			
 			if (n == 1) {
 				return v[0];
 			}
@@ -322,58 +372,62 @@ namespace Common {
 
 		/**********************************************************************/
 
-		template <template<class> class V, class T> void sort(V<T>& v, const bool& asc = true) {
+		template <template<class, class...> class V, class T, class... otherT> T& sum(V<T, otherT...>& v) {
+			int n = v.size();
+
+#ifndef MATHEXT_NO_CHECKS			
+			
+			if (n == 0) {
+				throw ErrMsgException<Message<>>("Common::MathExt::sum(V<T>& v) : Summing an empty vector!!!");
+				return T();
+			}
+			
+#endif			
+			
+			T res = v[0];
+
+			for (int i = 1; i < n; i++) {
+				res = res + v[i];
+			}
+
+			return res;
+		}
+
+		/**********************************************************************/
+		
+		/**********************************************************************/
+
+		template <template<class, class...> class V, class T, class... otherT> void sort(V<T,otherT...>& v, const bool& asc) {
 			// Sort all elements in v ascending
 			qSort(v);
 
 			if (!asc) { // Swap the elements
-				for (int i = 0; i < v.size() / 2; i++) {
-					qSwap(v[i], v[v.size() - 1 - i]);
-				}
+				reverseVec(v);
 			}
 		}
 
-		template <template<class> class V, class T> void stableSort(V<T>& v, const bool& asc = true) {
+		template <template<class, class...> class V, class T, class... otherT> void stableSort(V<T,otherT...>& v, const bool& asc) {
 			// Sort all elements in v ascending
 			qStableSort(v);
 
 			if (!asc) { // Swap the elements
-				for (int i = 0; i < v.size() / 2; i++) {
-					qSwap(v[i], v[v.size() - 1 - i]);
-				}
+				reverseVec(v);
 			}
 		}
 
 		/**********************************************************************/
-
+		
 		/**********************************************************************/
-
-		inline void rndSeed(const int& s) {
-			qsrand(s); //std::srand(s);
-
-			rSeed = s; // Preserve the initial random seed
+		
+		template <template<class, class...> class V, class T, class... otherT> void reverseVec(V<T,otherT...>& v){
+			int n = v.size();
+			
+			for (int i = 0; i < n / 2; i++) {
+					Math::swap(v[i], v[n - 1 - i]);
+			}
+			
 		}
-
-		inline int rndSeed() {
-			return rSeed;
-		}
-
-		inline int rndInt() {
-			return qrand(); //std::rand();
-		}
-
-		inline int rndInt(const int& start, const int& finish) {
-			return start + round((double) rndInt() / (double) RAND_MAX * (double) (finish - start));
-		}
-
-		inline double rndDouble() {
-			return (double) qrand() / double(RAND_MAX);
-		}
-
-		inline double rndDouble(const double& start, const double& finish) {
-			return start + (finish - start) * rndDouble();
-		}
-
+		
 		/**********************************************************************/
 
 		/**********************************************************************/
@@ -393,61 +447,6 @@ namespace Common {
 		/**********************************************************************/
 
 		/**********************************************************************/
-
-		template <template<class, class...> class V, class T, class... otherT> inline int probSelect(const V<T, otherT...>& prob, const T& probPow = 1.0) {
-			int n = prob.size();
-			T total;
-			vector<T> intBegin;
-			vector<T> intEnd;
-
-			intBegin.resize(n);
-			intEnd.resize(n);
-
-			total = 0.0;
-
-			for (int i = 0; i < n; i++) {
-				intBegin[i] = total;
-				intEnd[i] = total + pow(prob[i], probPow);
-				//Debugger::info << prob[i] << " - " << probPow << "-" << ENDL;
-				total = intEnd[i]; //+= pow(prob[i], probPow);
-			}
-
-			//for (int i = 0; i < n; i++) {
-			//    Debugger::info << intBegin[i] << " - " << intEnd[i] << ENDL;
-			//    getchar();
-			//}
-
-			T point = rndDouble(0.0, total);
-
-			int i = 0;
-			for (i = 0; i < n; i++) {
-				if (intBegin[i] < point && point <= intEnd[i]) {
-					break;
-				}
-			}
-
-			if (i == n) {
-				throw ErrMsgException<Message<>>("Common::MathExt::probSelect : Failed to find interval with the point selecting randomly!");
-				return rndInt(0, n - 1);
-			}
-
-			return i;
-		}
-
-		/**********************************************************************/
-
-		/**********************************************************************/
-
-		template <template<class, class...> class V, class T, class... otherT> inline void randPermut(V<T, otherT...>& permut) {
-			int n = permut.size();
-			int i;
-			int j;
-
-			for (i = 1; i < n; i++) {
-				j = qrand() % (i + 1);
-				swap(permut[i], permut[j]);
-			}
-		}
 
 		/*
 		template <template<class,class> class V, class VA, class T> inline void randPermut(V<T,VA>& permut) {

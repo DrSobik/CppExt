@@ -1,0 +1,6 @@
+#ifndef OLD_MATHEXT
+#define	OLD_MATHEXT
+
+#include "MathExt.h"
+
+#endif

@@ -9,7 +9,7 @@ CONFIG += debug
 PKGCONFIG +=
 QT = core gui widgets
 SOURCES += main.cpp
-HEADERS += ../Assignable/Assignable.h ../Clonable/Clonable.h ../Comparable/Comparable.h ../Exceptions/Exception.h ../Exceptions/MsgException.h ../Functor/Functor.h ../Include/Assignable ../Include/Clonable ../Include/Comparable ../Include/Exceptions ../Include/Functor ../Include/MathExt ../Include/Messages ../Include/Object ../Include/Operationable ../Include/Runnable ../Include/SavableRestorable ../Include/WritableReadable ../MathExt/MathExt.h ../Messages/Messages.h ../Object/Object.h ../Operationable/Operationable.h ../Runnable/Runnable.h ../Savable/SavableRestorable.h ../SmartPointer/SmartPointer.h ../WritableReadable/WritableReadable.h SmartPointer
+HEADERS += ../Assignable/Assignable.h ../Clonable/Clonable.h ../Comparable/Comparable.h ../Exceptions/Exception.h ../Exceptions/MsgException.h ../Functor/Functor.h ../Include/Assignable ../Include/Clonable ../Include/Comparable ../Include/Exceptions ../Include/Functor ../Include/MathExt ../Include/Messages ../Include/Object ../Include/Operationable ../Include/RandExt ../Include/Runnable ../Include/SavableRestorable ../Include/SenderReceiver ../Include/SmartPointer ../Include/WritableReadable ../MathExt/MathExt.h ../Messages/Messages.h ../Object/Object.h ../Operationable/Operationable.h ../RandExt/RandExt.h ../Runnable/Runnable.h ../SavableRestorable/SavableRestorable.h ../SenderReceiver/SenderReceiver.h ../SmartPointer/SmartPointer.h ../WritableReadable/WritableReadable.h
 FORMS +=
 RESOURCES +=
 TRANSLATIONS +=
@@ -20,7 +20,7 @@ UI_DIR =
 QMAKE_CC = gcc
 QMAKE_CXX = g++
 DEFINES += 
-INCLUDEPATH += ../Include 
+INCLUDEPATH += ../Include . 
 LIBS += 
 equals(QT_MAJOR_VERSION, 4) {
 QMAKE_CXXFLAGS += -std=c++11

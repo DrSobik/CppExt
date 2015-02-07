@@ -1,2 +1,7 @@
+#ifndef EXCEPTIONS
+#define	EXCEPTIONS
+
 #include "../Exceptions/Exception.h"
 #include "../Exceptions/MsgException.h"
+
+#endif

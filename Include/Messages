@@ -1,1 +1,6 @@
+#ifndef MESSAGES
+#define	MESSAGES
+
 #include "../Messages/Messages.h"
+
+#endif

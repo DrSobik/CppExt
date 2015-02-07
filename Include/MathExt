@@ -1,1 +1,6 @@
+#ifndef MATHEXT
+#define	MATHEXT
+
 #include "../MathExt/MathExt.h"
+
+#endif

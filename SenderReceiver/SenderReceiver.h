@@ -16,18 +16,18 @@ namespace Common {
 
 		/**********************************************************************/
 
-		template<class T> 
+		template<class T>
 		class ReceiverOf {
-		
 		private:
 
-			ReceiverOf(const ReceiverOf&){}
-			
+			ReceiverOf(const ReceiverOf&) { }
+
 		protected:
 
-			ReceiverOf(){}
-			virtual ~ReceiverOf(){}
-			
+			ReceiverOf() { }
+
+			virtual ~ReceiverOf() { }
+
 		public:
 
 			virtual void receive(T* evt) = 0; // Reimplement for receiving
@@ -38,19 +38,26 @@ namespace Common {
 
 		/**********************************************************************/
 
+#define SENDER_API_FOR(senderT)\
+using senderT::addReceiver;\
+using senderT::removeReceiver;\
+using senderT::removeAllReceiversOf;\
+using senderT::send;\
+;
+
 		/** Interface for Sender API. */
-		template<class T, class receiverT = ReceiverOf<T>> 
+		template<class T, class receiverT = ReceiverOf<T>>
 		class SenderOf {
-			
 		private:
-			
-			SenderOf(const SenderOf&){}
-			
-		protected:	
-			
-			SenderOf(){}
-			virtual ~SenderOf(){}
-			
+
+			SenderOf(const SenderOf&) { }
+
+		protected:
+
+			SenderOf() { }
+
+			virtual ~SenderOf() { }
+
 		public:
 
 			/** Add a receiver for the published something. */
@@ -60,31 +67,32 @@ namespace Common {
 			virtual void removeReceiver(const receiverT& receiver) = 0;
 
 			virtual void removeAllReceiversOf(const T&) = 0;
-			
+
 			/** Send what must be sent. */
 			virtual void send(T* evt) = 0;
 		};
 
 		/**********************************************************************/
-		
+
 		/**********************************************************************/
 
 		/** How the messages are dispatched by default : iterate over all receivers. */
-		template<class T, class receiverT = ReceiverOf<T>, class contT = std::set<receiverT*>> 
+		template<class T, class receiverT = ReceiverOf<T>, class contT = std::set<receiverT*>>
 		class DefaultSenderOf : SenderOf<T, receiverT> {
-		
 		protected:
-		
+
 			contT receivers; // Objects which will receive something
-		
+
 		public:
 
-			DefaultSenderOf() : SenderOf<T, receiverT>(){}
-			DefaultSenderOf(const DefaultSenderOf& other) : SenderOf<T, receiverT>(){
+			DefaultSenderOf() : SenderOf<T, receiverT>() { }
+
+			DefaultSenderOf(const DefaultSenderOf& other) : SenderOf<T, receiverT>() {
 				receivers = other.receivers;
 			}
-			virtual ~DefaultSenderOf(){}
-			
+
+			virtual ~DefaultSenderOf() { }
+
 			virtual void addReceiver(const receiverT& receiver) {
 				receivers.insert((receiverT*) & receiver);
 			}
@@ -93,10 +101,10 @@ namespace Common {
 				receivers.erase((receiverT*) & receiver);
 			}
 
-			virtual void removeAllReceiversOf(const T&){
+			virtual void removeAllReceiversOf(const T&) {
 				receivers.clear();
 			}
-			
+
 			virtual void send(T* evt) {
 				for (auto curReceiver : receivers) {
 					curReceiver->receive(evt);

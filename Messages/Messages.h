@@ -16,8 +16,12 @@
 #ifndef MESSAGES_H
 #define	MESSAGES_H
 
+#include <cstring>
+
 #include "WritableReadable"
 #include "Operationable"
+
+using namespace std;
 
 using namespace Common::Interfaces;
 
@@ -46,6 +50,7 @@ namespace Common {
 			virtual ~Message() {
 			}
 
+			
 			virtual Message& operator+=(const Message & other) {
 				msgData += other.msgData;
 				return *this;
@@ -54,6 +59,7 @@ namespace Common {
 			virtual void setMsgData(const T& newMsgData) {
 				msgData = newMsgData;
 			}
+ 
 			
 			virtual T& getMsgData() const {
 				return (T&)msgData;
