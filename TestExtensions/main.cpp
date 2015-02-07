@@ -40,6 +40,7 @@
 #include <QtCore/qobjectdefs.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qglobal.h>
+#include <qt5/QtCore/qmutex.h>
 
 using namespace std;
 
@@ -1049,6 +1050,8 @@ signals:
 
 /******************************************************************************/
 
+thread_local QVector<unsigned int> locGenVals;
+
 class ThreadRunnableLocStor : public Object<QObject>, RunnableIn<QThread> {
 
 	Q_OBJECT
@@ -1079,12 +1082,26 @@ public slots:
 
 		QTextStream out(stdout);
 
-		for (Math::uint64 i = 0; i < 200; i++) {
+		Math::uint64 numExp = 1000000000;
 
-			out << objectName() << ": " << Rand::rndInt() << endl;
+		for (Math::uint64 i = 0; i < numExp; i++) {
 
+			//out << objectName() << ": " << Rand::rndInt() << endl;
+			Rand::rndInt();
+
+			//locGenVals << curVal;
 		}
 
+		QMutex mutex;
+		mutex.lock();
+		//out << "GenVals: ";
+		//for (int i = 0; i < locGenVals.size(); i++) {
+		//	out << locGenVals[i] << " ";
+		//}
+		//out << endl;
+		out << "Generated rand nums: " << locGenVals.size() << endl;
+		mutex.unlock();
+		
 		emit ThreadRunnableLocStor::sigFinished();
 
 	}

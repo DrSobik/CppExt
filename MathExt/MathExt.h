@@ -60,74 +60,74 @@ namespace Common {
 
 		/**********************************************************************/
 		template<class T> void swap(T& x, T& y);
-		
+
 		double pow(const double& x, const double& p);
 		double pow(const double& x, const int& p);
 		double sqr(const double& x);
 		double sqrt(const double& x);
 		double exp(const double& x);
-		
+
 		double lg(const double& x);
 		double ln(const double& x);
 		double log(const double& base, const double& x);
-		
+
 		double sin(const double& x);
 		double cos(const double& x);
 		double tan(const double& x);
 		double cot(const double& x);
-		
+
 		double arcsin(const double& x);
 		double arccos(const double& x);
 		double arctan(const double& x);
 		double arccot(const double& x);
-		
+
 		int iabs(const int& x);
 		double fabs(const double& x);
 		int abs(const int& x);
 		double abs(const double& x);
-		
+
 		int cmp(const double& x1, const double& x2, const double& eps = Common::Math::EPSILON);
-		
+
 		template<class T> const T& min(const T& x1, const T& x2);
 		template <template<class, class...> class V, class T, class... otherT> const T& min(const V<T, otherT...>& v);
 		template <template<class, class...> class V, class T, class... otherT> int minIdx(const V<T, otherT...>& v);
-		
+
 		template<class T> const T& max(const T& x1, const T& x2);
 		template <template<class, class...> class V, class T, class... otherT> const T& max(const V<T, otherT...>& v);
 		template <template<class, class...> class V, class T, class... otherT> int maxIdx(const V<T, otherT...>& v);
-		
+
 		template <template<class, class...> class V, class T, class... otherT> T& sum(V<T, otherT...>& v);
-		
-		template <template<class, class...> class V, class T, class... otherT> void sort(V<T,otherT...>& v, const bool& asc = true);
-		template <template<class, class...> class V, class T, class... otherT> void stableSort(V<T,otherT...>& v, const bool& asc = true);
-		
-		template <template<class, class...> class V, class T, class... otherT> void reverseVec(V<T,otherT...>& v);
-		
+
+		template <template<class, class...> class V, class T, class... otherT> void sort(V<T, otherT...>& v, const bool& asc = true);
+		template <template<class, class...> class V, class T, class... otherT> void stableSort(V<T, otherT...>& v, const bool& asc = true);
+
+		template <template<class, class...> class V, class T, class... otherT> void reverseVec(V<T, otherT...>& v);
+
 		double round(const double& x);
 		double ceil(const double& x);
 		double floor(const double& x);
-		
+
 		template <template<class, class...> class V, class T, class... otherT> bool nextLexPermutation(V<T, otherT...>& array);
-		
+
 		unsigned long long int factorial(const int& n);
 		/**********************************************************************/
 
 		/**********************************************************************/
 
-		/**********************************************************************/ 
-		
-		template<class T> void swap(T& x, T& y){
+		/**********************************************************************/
+
+		template<class T> void swap(T& x, T& y) {
 			T z = x;
-			
+
 			x = y;
-			
+
 			y = z;
 		}
-		
+
 		/**********************************************************************/
-		
+
 		/**********************************************************************/
-		
+
 		inline double pow(const double& x, const double& p) {
 			return std::pow(x, p);
 		}
@@ -228,7 +228,7 @@ namespace Common {
 		inline int iabs(const int& x) {
 			return Common::Math::abs(x);
 		}
-		
+
 		/** FP abs */
 		inline double fabs(const double& x) {
 			return (x < 0.0) ? -x : x; //std::fabs(x);
@@ -261,44 +261,52 @@ namespace Common {
 			throw ErrMsgException<Message<>>("Common::MathExt::cmp(const double x1, const double x2, const double eps) failed to compare values!");
 		}
 
-		
 		template<class T> inline const T& min(const T& x1, const T& x2) {
 			return (x1 < x2) ? x1 : x2; //return std::min(x1, x2);
 		}
 
 		template <template<class, class...> class V, class T, class... otherT> inline const T& min(const V<T, otherT...>& v) {
-			int n = v.size();
+			/*
+						int n = v.size();
 			
-#ifndef MATHEXT_NO_CHECKS
+			#ifndef MATHEXT_NO_CHECKS
 			
-			if (n == 0) {
-				throw ErrMsgException<Message<>>("Common::MathExt::min(const V<T> &v) the input vector is empty!");
-			}
+						if (n == 0) {
+							throw ErrMsgException<Message<>>("Common::MathExt::min(const V<T> &v) the input vector is empty!");
+						}
 
-#endif			
+			#endif			
 
-			if (n == 1) {
-				return v[0];
-			}
+						if (n == 1) {
+							return v[0];
+						}
 
-			int pos = 0;
+						int pos = 0;
 
-			for (int i = 1; i < n; i++) {
-				if (v[pos] > v[i]) {
-					pos = i;
-				}
-			}
+						for (int i = 1; i < n; i++) {
+							if (v[pos] > v[i]) {
+								pos = i;
+							}
+						}
 
-			return v[pos];
+						return v[pos];
+			 */
+			
+			int idx = minIdx(v); 
+			
+			return v[idx];
 		}
 
 		template <template<class, class...> class V, class T, class... otherT> inline int minIdx(const V<T, otherT...>& v) {
 			int n = v.size();
 
+#ifndef MATHEXT_NO_CHECKS
+
 			if (n == 0) {
-				throw ErrMsgException<Message<>>("Common::MathExt::min(const V<T> &v) the input vector is empty!");
+				throw ErrMsgException<Message<>>("Common::MathExt::minIdx(const V<T> &v) the input vector is empty!");
 				return -1;
 			}
+#endif
 
 			if (n == 1) {
 				return 0;
@@ -320,38 +328,46 @@ namespace Common {
 		}
 
 		template <template<class, class...> class V, class T, class... otherT> const T& max(const V<T, otherT...>& v) {
-			int n = v.size();
-
-#ifndef MATHEXT_NO_CHECKS			
+			/*
 			
-			if (n == 0) {
-				throw ErrMsgException<Message<>>("Common::MathExt::max(const V<T> &v) the input vector is empty!");
-			}
+				int n = v.size();
 
-#endif			
-			
-			if (n == 1) {
-				return v[0];
-			}
+	#ifndef MATHEXT_NO_CHECKS			
 
-			int pos = 0;
-
-			for (int i = 1; i < n; i++) {
-				if (v[pos] < v[i]) {
-					pos = i;
+				if (n == 0) {
+					throw ErrMsgException<Message<>>("Common::MathExt::max(const V<T> &v) the input vector is empty!");
 				}
-			}
 
-			return v[pos];
+	#endif			
+
+				if (n == 1) {
+					return v[0];
+				}
+
+				int pos = 0;
+
+				for (int i = 1; i < n; i++) {
+					if (v[pos] < v[i]) {
+						pos = i;
+					}
+				}
+
+				return v[pos];
+			 */
+			
+			int idx = maxIdx(v); 
+			
+			return v[idx];
 		}
 
 		template <template<class, class...> class V, class T, class... otherT> int maxIdx(const V<T, otherT...>& v) {
 			int n = v.size();
-
+#ifndef MATHEXT_NO_CHECKS
 			if (n == 0) {
 				throw ErrMsgException<Message<>>("Common::MathExt::max(const V<T> &v) the input vector is empty!");
 				return -1;
 			}
+#endif			
 
 			if (n == 1) {
 				return 0;
@@ -376,14 +392,14 @@ namespace Common {
 			int n = v.size();
 
 #ifndef MATHEXT_NO_CHECKS			
-			
+
 			if (n == 0) {
 				throw ErrMsgException<Message<>>("Common::MathExt::sum(V<T>& v) : Summing an empty vector!!!");
 				return T();
 			}
-			
+
 #endif			
-			
+
 			T res = v[0];
 
 			for (int i = 1; i < n; i++) {
@@ -394,21 +410,23 @@ namespace Common {
 		}
 
 		/**********************************************************************/
-		
+
 		/**********************************************************************/
 
-		template <template<class, class...> class V, class T, class... otherT> void sort(V<T,otherT...>& v, const bool& asc) {
+		template <template<class, class...> class V, class T, class... otherT> void sort(V<T, otherT...>& v, const bool& asc) {
 			// Sort all elements in v ascending
-			qSort(v);
+			//qSort(v);
+			std::sort(v.begin(), v.end());
 
 			if (!asc) { // Swap the elements
 				reverseVec(v);
 			}
 		}
 
-		template <template<class, class...> class V, class T, class... otherT> void stableSort(V<T,otherT...>& v, const bool& asc) {
+		template <template<class, class...> class V, class T, class... otherT> void stableSort(V<T, otherT...>& v, const bool& asc) {
 			// Sort all elements in v ascending
-			qStableSort(v);
+			//qStableSort(v);
+			std::stable_sort(v.begin(), v.end());
 
 			if (!asc) { // Swap the elements
 				reverseVec(v);
@@ -416,18 +434,18 @@ namespace Common {
 		}
 
 		/**********************************************************************/
-		
+
 		/**********************************************************************/
-		
-		template <template<class, class...> class V, class T, class... otherT> void reverseVec(V<T,otherT...>& v){
+
+		template <template<class, class...> class V, class T, class... otherT> void reverseVec(V<T, otherT...>& v) {
 			int n = v.size();
-			
+
 			for (int i = 0; i < n / 2; i++) {
-					Math::swap(v[i], v[n - 1 - i]);
+				Math::swap(v[i], v[n - 1 - i]);
 			}
-			
+
 		}
-		
+
 		/**********************************************************************/
 
 		/**********************************************************************/

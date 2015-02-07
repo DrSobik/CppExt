@@ -339,43 +339,51 @@ namespace Common {
 		/**********************************************************************/
 		
 		//int rSeed = 0; // Initial seed 
-		thread_local RandGenMT rgmt(1872638163);
+		thread_local RandGenMT RNG(1872638163);
 
+		/**********************************************************************/
+		
+		/**********************************************************************/
+		
 		inline void rndSeed(const unsigned int& s) {
 			//qsrand(s); //std::srand(s);
 
 			//rSeed = s; // Preserve the initial random seed
 
-			rgmt.setSeed(s);
+			RNG.setSeed(s);
 		}
 
 		inline unsigned int rndSeed() {
 			//return rSeed;
-			if (rgmt.getSeeds().size() == 0) throw ErrMsgException<Message<>>("int Common::Rand::rndSeed() : No seed set!");
+			if (RNG.getSeeds().size() == 0) throw ErrMsgException<Message<>>("int Common::Rand::rndSeed() : No seed set!");
 
-			return rgmt.getSeeds()[0];
+			return RNG.getSeeds()[0];
 		}
 
 		inline unsigned int rndInt() {
 			//return qrand(); //std::rand();
 
-			return rgmt.rndInt();
+			return RNG.rndInt();
 		}
 
 		inline int rndInt(const int& start, const int& finish) {
 			//return start + round((double) rndInt() / (double) RAND_MAX * (double) (finish - start));
-			return start + round((double) Rand::rndInt() / (double) rgmt.getMaxGenInt() * (double) (finish - start));
+			return start + round((double) Rand::rndInt() / (double) RNG.getMaxGenInt() * (double) (finish - start));
 		}
 
 		inline double rndDouble() {
 			//return (double) Rand::rndInt() / double(RAND_MAX);
-			return (double) Rand::rndInt() / double(rgmt.getMaxGenInt());
+			return (double) Rand::rndInt() / double(RNG.getMaxGenInt());
 		}
 
 		inline double rndDouble(const double& start, const double& finish) {
 			return start + (finish - start) * Rand::rndDouble();
 		}
 
+		/**********************************************************************/
+		
+		/**********************************************************************/
+		
 		template <template<class, class...> class V, class T, class... otherT> inline void randPermut(V<T, otherT...>& permut) {
 			int n = permut.size();
 			int i;
@@ -434,7 +442,9 @@ namespace Common {
 
 		template <template<class, class...> class V, class T, class... otherVT, class... otherProbT> int probSelec(const V<T, otherVT...> v, const V<double, otherProbT...>& prob, const double& probPow) {
 
-			return v[Rand::probSelectIdx(prob, probPow)];
+			int idx = Rand::probSelectIdx(prob, probPow); 
+			
+			return v[idx];
 
 		}
 
