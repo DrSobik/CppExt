@@ -339,7 +339,7 @@ namespace Common {
 		/**********************************************************************/
 
 		//int rSeed = 0; // Initial seed 
-		thread_local RandGenMT RNG(1872638163); 
+		static thread_local RandGenMT RNG(1872638163); 
 
 		/**********************************************************************/
 
