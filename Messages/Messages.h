@@ -17,7 +17,9 @@
 #define	MESSAGES_H
 
 #include <cstring>
+#include <string>
 
+#include "Object"
 #include "WritableReadable"
 #include "Operationable"
 
@@ -31,38 +33,33 @@ namespace Common {
 
 		/**********************************************************************/
 
-		template<class T = const char*> class Message : public Object<>, public Addible<Message<T>>	{
+		template<class T = string> class Message : public Object<>, public Addible<Message<T>>
+		{
 			private:
 
 			T msgData;
 
 			public:
 
-			Message() : BasicObject(), Object(), Addible<Message < T >> () {
-			}
+			Message() : BasicObject(), Object(), Addible<Message < T >> () { }
 
-			Message(const T& otherMsg) : BasicObject(), Object<>(), Addible<Message < T >> (), msgData(otherMsg) {
-			}
+			Message(const T & otherMsg) : BasicObject(), Object<>(), Addible<Message < T >> (), msgData(otherMsg) { }
 
-			Message(const Message & other) : BasicObject(), Object(other), Addible<Message < T >> (), msgData(other.msgData) {
-			}
+			Message(const Message & other) : BasicObject(), Object(other), Addible<Message < T >> (), msgData(other.msgData) { }
 
-			virtual ~Message() {
-			}
+			virtual ~Message() { }
 
-			
 			virtual Message& operator+=(const Message & other) {
 				msgData += other.msgData;
 				return *this;
 			}
 
-			virtual void setMsgData(const T& newMsgData) {
+			virtual void setMsgData(const T & newMsgData) {
 				msgData = newMsgData;
 			}
- 
-			
-			virtual T& getMsgData() const {
-				return (T&)msgData;
+
+			virtual T & getMsgData() const {
+				return (T&) msgData;
 			}
 
 		};
@@ -70,9 +67,8 @@ namespace Common {
 		/**********************************************************************/
 
 		/**********************************************************************/
-
-		template<> Message<const char*>::Message() : BasicObject(), Object(), Addible<Message<const char*>>(), msgData(NULL) {
-		}
+/*/
+		template<> Message<const char*>::Message() : BasicObject(), Object(), Addible<Message<const char*>>(), msgData(NULL) { }
 
 		template<> Message<const char*>::Message(const char* const& otherMsg) : BasicObject(), Object<>(), Addible<Message<const char*>>(), msgData(NULL) {
 			msgData = new char[strlen(otherMsg) + 1];
@@ -89,17 +85,17 @@ namespace Common {
 				delete[] msgData;
 			}
 		}
-		
+
 		template<> void Message<const char*>::setMsgData(const char* const& newMsgData) {
 			if (msgData != NULL) {
 				delete[] msgData;
 			}
-			
-			msgData = new char[strlen(newMsgData)+1];
-			
-			strcpy((char*)msgData, newMsgData);
+
+			msgData = new char[strlen(newMsgData) + 1];
+
+			strcpy((char*) msgData, newMsgData);
 		}
-		
+
 		template<> Message<const char*>& Message<const char*>::operator+=(const Message<const char*>& other) {
 
 			char prevMsgData[strlen(msgData) + 1];
@@ -117,83 +113,76 @@ namespace Common {
 
 			return *this;
 		}
-
+*/
 		/**********************************************************************/
 
 		/**********************************************************************/
+		/*
+				template<> Message<char*>::Message() : BasicObject(), Object(), Addible<Message<char*>>(), msgData((char*) NULL) {
+				}
 
-		template<> Message<char*>::Message() : BasicObject(), Object(), Addible<Message<char*>>(), msgData((char*) NULL) {
-		}
+				template<> Message<char*>::Message(char* const& otherMsg) : BasicObject(), Object<>(), Addible<Message<char*>>(), msgData((char*) NULL) {
+					msgData = new char[strlen(otherMsg) + 1];
+					strcpy(msgData, otherMsg);
+				}
 
-		template<> Message<char*>::Message(char* const& otherMsg) : BasicObject(), Object<>(), Addible<Message<char*>>(), msgData((char*) NULL) {
-			msgData = new char[strlen(otherMsg) + 1];
-			strcpy(msgData, otherMsg);
-		}
+				template<> Message<char*>::Message(const Message& other) : BasicObject(), Object(other), Addible<Message<char*>>(), msgData((char*) NULL) {
+					msgData = new char[strlen(other.msgData) + 1];
+					strcpy(msgData, other.msgData);
+				}
 
-		template<> Message<char*>::Message(const Message& other) : BasicObject(), Object(other), Addible<Message<char*>>(), msgData((char*) NULL) {
-			msgData = new char[strlen(other.msgData) + 1];
-			strcpy(msgData, other.msgData);
-		}
+				template<> Message<char*>::~Message() {
+					if (msgData != NULL) {
+						delete[] msgData;
+					}
+				}
 
-		template<> Message<char*>::~Message() {
-			if (msgData != NULL) {
-				delete[] msgData;
-			}
-		}
-
-		template<> void Message<char*>::setMsgData(char* const& newMsgData) {
-			if (msgData != NULL) {
-				delete[] msgData;
-			}
+				template<> void Message<char*>::setMsgData(char* const& newMsgData) {
+					if (msgData != NULL) {
+						delete[] msgData;
+					}
 			
-			msgData = new char[strlen(newMsgData)+1];
+					msgData = new char[strlen(newMsgData)+1];
 			
-			strcpy((char*)msgData, newMsgData);
-		}
+					strcpy((char*)msgData, newMsgData);
+				}
 		
-		template<> Message<char*>& Message<char*>::operator+=(const Message<char*>& other) {
+				template<> Message<char*>& Message<char*>::operator+=(const Message<char*>& other) {
 
-			char prevMsgData[strlen(msgData) + 1];
+					char prevMsgData[strlen(msgData) + 1];
 
-			strcpy(prevMsgData, msgData);
+					strcpy(prevMsgData, msgData);
 
-			if (msgData != NULL) {
-				delete[] msgData;
-			}
+					if (msgData != NULL) {
+						delete[] msgData;
+					}
 
-			msgData = new char[strlen(prevMsgData) + strlen(other.msgData) + 1];
+					msgData = new char[strlen(prevMsgData) + strlen(other.msgData) + 1];
 
-			strcpy(msgData, prevMsgData);
-			strcat(msgData, other.msgData);
+					strcpy(msgData, prevMsgData);
+					strcat(msgData, other.msgData);
 
-			return *this;
-		}
-
+					return *this;
+				}
+		 */
 		/**********************************************************************/
 
 		/**********************************************************************/
 
-		template<class dstT, class msgDataT = const char*> class MessageWritableTo : public Message<msgDataT>, public WritableTo<dstT> {
-		
+		template<class dstT, class msgDataT = string> class MessageWritableTo : public Message<msgDataT>, public WritableTo<dstT> {
 		public:
 
-			MessageWritableTo() : BasicObject(), Message<msgDataT>(), WritableTo<dstT>() {
-			}
+			MessageWritableTo() : BasicObject(), Message<msgDataT>(), WritableTo<dstT>() { }
 
-			MessageWritableTo(msgDataT& otherMsg) : BasicObject(), Message<msgDataT>(otherMsg), WritableTo<dstT>() {
-			}
+			MessageWritableTo(msgDataT& otherMsg) : BasicObject(), Message<msgDataT>(otherMsg), WritableTo<dstT>() { }
 
-			MessageWritableTo(const msgDataT otherMsg) : BasicObject(), Message<msgDataT>(otherMsg), WritableTo<dstT>() {
-			}
+			MessageWritableTo(const msgDataT otherMsg) : BasicObject(), Message<msgDataT>(otherMsg), WritableTo<dstT>() { }
 
-			MessageWritableTo(const MessageWritableTo& other) : BasicObject(), Message<msgDataT>(other), WritableTo<dstT>() {
-			}
+			MessageWritableTo(const MessageWritableTo& other) : BasicObject(), Message<msgDataT>(other), WritableTo<dstT>() { }
 
-			MessageWritableTo(const Message<msgDataT>& other) : BasicObject(), Message<msgDataT>(other), WritableTo<dstT>() {
-			}
+			MessageWritableTo(const Message<msgDataT>& other) : BasicObject(), Message<msgDataT>(other), WritableTo<dstT>() { }
 
-			virtual ~MessageWritableTo() {
-			}
+			virtual ~MessageWritableTo() { }
 
 			virtual dstT& operator>>(dstT& dst) const {
 

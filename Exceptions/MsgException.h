@@ -8,10 +8,15 @@
 #ifndef MSGEXCEPTION_H
 #define	MSGEXCEPTION_H
 
-#include "Exception.h"
+#include <string>
+
+#include "Exceptions"
 #include "WritableReadable"
 #include "Messages"
 
+
+using namespace std;
+		
 using namespace Common;
 using namespace Common::Interfaces;
 using namespace Common::Messages;
@@ -22,7 +27,7 @@ namespace Common {
 
 		/**********************************************************************/
 
-		template<class msgT = Message<>, class senderT = BasicObject> class MsgException : public Exception<> {
+		template<class msgT = Message<string>, class senderT = BasicObject> class MsgException : public Exception<> {
 		private:
 
 			msgT msg;
@@ -49,7 +54,7 @@ namespace Common {
 
 		/**********************************************************************/
 
-		template<class msgT = Message<>, class senderT = BasicObject> class InfoMsgException : public MsgException<msgT> {
+		template<class msgT = Message<string>, class senderT = BasicObject> class InfoMsgException : public MsgException<msgT> {
 		public:
 
 			InfoMsgException(msgT someMsg, senderT* sender = NULL) : MsgException<msgT>(msgT("Info: ") + someMsg, sender) {
@@ -72,7 +77,7 @@ namespace Common {
 
 		/**********************************************************************/
 
-		template<class msgT = Message<>, class senderT = BasicObject> class WarnMsgException : public MsgException<msgT> {
+		template<class msgT = Message<string>, class senderT = BasicObject> class WarnMsgException : public MsgException<msgT> {
 		public:
 
 			WarnMsgException(msgT someMsg, senderT* sender = NULL) : MsgException<msgT>(msgT("Warning: ") + someMsg, sender) {
@@ -95,7 +100,7 @@ namespace Common {
 
 		/**********************************************************************/
 
-		template<class msgT = Message<>, class senderT = BasicObject> class ErrMsgException : public MsgException<msgT> {
+		template<class msgT = Message<string>, class senderT = BasicObject> class ErrMsgException : public MsgException<msgT> {
 		public:
 
 			ErrMsgException(const msgT& someMsg, senderT* sender = NULL) : MsgException<msgT>(msgT("Error: ") + someMsg, sender) {}

@@ -93,7 +93,7 @@ namespace Common {
 			
 			virtual T* operator->(){
 				
-				if (ptr == NULL) throw ErrMsgException<Message<>>("SmartPointer::operator->() : Trying to dereference a NULL pointer!!!", this);
+				if (ptr == NULL) throw ErrMsgException<Message<string>>(string("SmartPointer::operator->() : Trying to dereference a NULL pointer!!!"), this);
 				
 				return ptr;
 			}

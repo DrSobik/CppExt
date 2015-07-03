@@ -33,6 +33,8 @@
 #include "RandExt"
 #include "SenderReceiver"
 
+#include "test.h"
+
 #include <QTextStream>
 #include <QVector>
 
@@ -361,11 +363,11 @@ public:
 		if (x == 0.0) {
 			x = 10E300;
 
-			MessageWritableTo<QTextStream> errMsg;
+			MessageWritableTo<QTextStream,QString> errMsg;
 
 			errMsg.setMsgData("Inv::void inv() : division by 0!");
 
-			throw ErrMsgException<MessageWritableTo<QTextStream> >(errMsg);
+			throw ErrMsgException<MessageWritableTo<QTextStream,QString> >(errMsg);
 		};
 
 		x = 1.0 / x;
@@ -930,19 +932,19 @@ public slots:
 
 };
 
-template<class resT = void, class...argT> class Signal : public Functor<resT, argT...> {
+template<class...argT> class Signal : public Functor<void, argT...> {
 public:
 
-	typedef resT(*FunctionPtr)(const argT&...);
-	typedef Functor<resT, argT...>* FunctorPtr;
-	typedef resT(BasicObject::*MethodPtr)(const argT&...);
+	typedef void(*FunctionPtr)(const argT&...);
+	typedef Functor<void, argT...>* FunctorPtr;
+	typedef void(BasicObject::*MethodPtr)(const argT&...);
 
 private:
 
 	std::vector<FunctionPtr> functionSlots; // Functions that will be called on signal
 	std::vector<FunctorPtr> functorSlots; // Functors that will be called on signal
 
-	std::vector<std::pair<BasicObject*, resT(BasicObject::*)(const argT&...) >> methodSlots; // Object methods to be called on signal
+	std::vector<std::pair<BasicObject*, void(BasicObject::*)(const argT&...) >> methodSlots; // Object methods to be called on signal
 
 public:
 
@@ -963,19 +965,19 @@ public:
 	}
 
 	/** Connect method slot. */
-	virtual void connect(BasicObject* obj, MethodPtr mPtr) {
+	template<class receiverT, class methodT> void connect(receiverT* obj, methodT mPtr) {
 
 		std::pair < BasicObject*, MethodPtr > slotPair;
 
 		slotPair.first = obj;
 
-		slotPair.second = mPtr;
+		slotPair.second = MethodPtr(mPtr);
 
 		methodSlots.push_back(slotPair);
 
 	}
 
-	virtual resT operator()(const argT&... args) {
+	virtual void operator()(const argT&... args) {
 
 		// Call all function slots
 		FunctionPtr curFunctionPtr;
@@ -997,7 +999,7 @@ public:
 
 		// Call all method slots
 		BasicObject* curObj;
-		resT(BasicObject::*curMethod) (const argT&...);
+		void(BasicObject::*curMethod) (const argT&...);
 
 		for (unsigned int i = 0; i < methodSlots.size(); i++) {
 			curObj = methodSlots[i].first;
@@ -1011,27 +1013,29 @@ public:
 
 };
 
-class Connection {
+template<class objT, class...argT> class QtSignal : public Functor<void, argT...> {
+private:
+
+	typedef void(objT::*QtMethodPtr)(const argT&...);
+
+	objT* sender;
+	QtMethodPtr signal;
+
+	QtSignal() : Signal<void, argT...>() { }
+
 public:
 
-	template <class senderT, class signalT, class receiverT, class slotT>
-	static void connect(senderT*, signalT* signal, receiverT* receiver, slotT slot) {
-
-		signal->connect(receiver, typename signalT::MethodPtr(slot));
-
+	QtSignal(objT* sender, QtMethodPtr signal) {
+		this->sender = sender;
+		this->signal = signal;
 	}
 
-};
+	template<class receiverT, class methodT> void connect(receiverT* o, methodT qtM) {
+		QObject::connect(this->sender, this->signal, o, qtM);
+	}
 
-class QtConnetion {
-public:
-
-	template <class senderT, class signalT, class receiverT, class slotT>
-	static void connect(senderT* sender, signalT signal, receiverT* receiver, slotT slot) {
-
-		QObject::connect(sender, signal, receiver, slot);
-		//signal->connect(receiver, typename signalT::MethodPtr(slot));
-
+	virtual void operator()(const argT&... args) {
+		(sender->*signal)(args...);
 	}
 
 };
@@ -1041,7 +1045,10 @@ class ClassWithSig : public QObject, public BasicObject {
 
 public:
 
-	Signal<void, int> sig;
+	Signal<int> sig;
+	QtSignal<ClassWithSig> qtSig;
+
+	ClassWithSig() : qtSig(this, &ClassWithSig::sigQt) { }
 
 signals:
 	void sigQt();
@@ -1101,7 +1108,7 @@ public slots:
 		//out << endl;
 		out << "Generated rand nums: " << locGenVals.size() << endl;
 		mutex.unlock();
-		
+
 		emit ThreadRunnableLocStor::sigFinished();
 
 	}
@@ -1124,28 +1131,23 @@ void testSigSlot() {
 
 	QTextStream out(stdout);
 
-	Signal<void, int> sig;
-
+	Signal<int> sig;
 	FunctorSlot fs;
-
 	ClassSlot cs;
-
 	ClassWithSig cls;
 
 	sig.connect(&functionSlot1);
 	sig.connect(&fs);
-
-	sig.connect(&cs, Signal<void, int>::MethodPtr(&ClassSlot::someSlot));
-	sig.connect(&cs, Signal<void, int>::MethodPtr(&ClassSlot::someSlot1));
-
-	Connection::connect(&cls, &cls.sig, &cs, &ClassSlot::someSlot1);
-
+	sig.connect(&cs, &ClassSlot::someSlot);
 	sig(10);
+
+	cls.sig.connect(&cs, &ClassSlot::someSlot1);
 	cls.sig(10);
 
-	QtConnetion::connect(&cls, &ClassWithSig::sigQt, &cs, &ClassSlot::slotQt);
+	cls.qtSig.connect(&cs, &ClassSlot::slotQt);
+	cls.qtSig();
 
-	cls.sigQt();
+	getchar();
 
 }
 
@@ -1359,9 +1361,9 @@ void exceptionTest() {
 
 	try {
 
-		Message<> msg("Hurrey!!! Custom exception!!!");
+		Message<string> msg("Hurrey!!! Custom exception!!!");
 
-		throw ErrMsgException<Message<>>(msg);
+		throw ErrMsgException<Message<string>>(msg);
 		//Message<> ("MessageTest");
 
 		//{
@@ -1369,9 +1371,9 @@ void exceptionTest() {
 		//}
 
 
-	} catch (MsgException<Message<>>&e) {
+	} catch (MsgException<Message<string>>&e) {
 
-		out << e.getMsg().getMsgData() << endl;
+		out << QString::fromStdString(e.getMsg().getMsgData()) << endl;
 		out << "Caught exception!" << endl;
 
 	}
@@ -1407,7 +1409,7 @@ void operationableTest() {
 	inv.x = 0.0;
 	try {
 		inv.inv();
-	} catch (ErrMsgException<MessageWritableTo<QTextStream>>&e) {
+	} catch (ErrMsgException<MessageWritableTo<QTextStream,QString>>&e) {
 		//} catch (MsgException<MessageWritableTo<QTextStream>>&e) {
 		//} catch (Exception<>&e) {
 
@@ -1479,11 +1481,11 @@ void smartPointerTest() {
 
 			//out << "SmartPointer sptr11 : " << sptr11->name << " " << sptr11->type << endl;
 
-		} catch (MsgException<Message<>> &e) {
+		} catch (MsgException<Message<string>> &e) {
 
 			out << "Source of exception : " << dynamic_cast<SmartPointer<SomeClonable1>*> (e.getSender()) << endl;
 
-			out << e.getMsg().getMsgData() << endl;
+			out << QString::fromStdString(e.getMsg().getMsgData()) << endl;
 
 			exit(-1);
 
@@ -1548,7 +1550,7 @@ void mathTest() {
 
 	Math::uint64 numExp = 1000000;
 	for (Math::uint64 i = 0; i < numExp; i++) {
-		int curVal = Rand::probSelec(someDVector, probs);
+		int curVal = Rand::probSelect(someDVector, probs);
 		//out << "Selected Value: " << curVal << endl;
 		freqs[curVal] += 1;
 	}

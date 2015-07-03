@@ -10,6 +10,7 @@
 
 #include <cmath>
 #include <vector>
+#include <algorithm>
 
 #include "Exceptions"
 
@@ -142,7 +143,7 @@ namespace Common {
 
 		inline double sqrt(const double& x) {
 #ifndef MATHEXT_NO_CHECKS
-			if (x < 0.0) throw ErrMsgException<Message<>>("Common::MathExt::sqrt(const double x) negative argument!");
+			if (x < 0.0) throw ErrMsgException<Message<string>>(string("Common::MathExt::sqrt(const double x) negative argument!"));
 #endif
 			return std::sqrt(x);
 		}
@@ -157,22 +158,22 @@ namespace Common {
 
 		inline double lg(const double& x) {
 #ifndef MATHEXT_NO_CHECKS
-			if (cmp(x, 0.0, EPSILON) <= 0) throw ErrMsgException<Message<>>("Common::MathExt::lg(const double x) small/negative argument!");
+			if (cmp(x, 0.0, EPSILON) <= 0) throw ErrMsgException<Message<string>>(string("Common::MathExt::lg(const double x) small/negative argument!"));
 #endif
 			return std::log10(x);
 		}
 
 		inline double ln(const double& x) {
 #ifndef MATHEXT_NO_CHECKS
-			if (cmp(x, 0.0, EPSILON) <= 0) throw ErrMsgException<Message<>>("Common::MathExt::ln(const double x) small/negative argument!");
+			if (cmp(x, 0.0, EPSILON) <= 0) throw ErrMsgException<Message<string>>(string("Common::MathExt::ln(const double x) small/negative argument!"));
 #endif
 			return std::log(x);
 		}
 
 		inline double log(const double& base, const double& x) {
 #ifndef MATHEXT_NO_CHECKS
-			if (cmp(x, 0.0, EPSILON) <= 0) throw ErrMsgException<Message<>>("Common::MathExt::lg(const double x) small/negative argument!");
-			if (cmp(base, 0.0, EPSILON) <= 0) throw ErrMsgException<Message<>>("Common::MathExt::lg(const double x) small/negative base!");
+			if (cmp(x, 0.0, EPSILON) <= 0) throw ErrMsgException<Message<string>>(string("Common::MathExt::lg(const double x) small/negative argument!"));
+			if (cmp(base, 0.0, EPSILON) <= 0) throw ErrMsgException<Message<string>>(string("Common::MathExt::lg(const double x) small/negative base!"));
 #endif
 			return ln(x) / ln(base);
 		}
@@ -191,15 +192,15 @@ namespace Common {
 
 		inline double tan(const double& x) {
 #ifndef MATHEXT_NO_CHECKS
-			if ((cmp(round(x / Pi_2), x / Pi_2, EPSILON) == 0) && (cmp(round(x / Pi), x / Pi, EPSILON) != 0)) throw ErrMsgException<Message<>>("Common::MathExt::tan(const double x) argument is multiplicity of Pi/2 !");
+			if ((cmp(round(x / Pi_2), x / Pi_2, EPSILON) == 0) && (cmp(round(x / Pi), x / Pi, EPSILON) != 0)) throw ErrMsgException<Message<string>>(string("Common::MathExt::tan(const double x) argument is multiplicity of Pi/2 !"));
 #endif
 			return std::tan(x);
 		}
 
 		inline double cot(const double& x) {
 #ifndef MATHEXT_NO_CHECKS
-			if (cmp(round(x / Pi), x / Pi, EPSILON) == 0) throw ErrMsgException<Message<>>("Common::MathExt::cot(const double x) argument is multiplicity of Pi !");
-			if (cmp(round(x / Pi_2), x / Pi_2, EPSILON) == 0) throw ErrMsgException<Message<>>("Common::MathExt::cot(const double x) argument is multiplicity of Pi/2 !");
+			if (cmp(round(x / Pi), x / Pi, EPSILON) == 0) throw ErrMsgException<Message<string>>(string("Common::MathExt::cot(const double x) argument is multiplicity of Pi !"));
+			if (cmp(round(x / Pi_2), x / Pi_2, EPSILON) == 0) throw ErrMsgException<Message<string>>(string("Common::MathExt::cot(const double x) argument is multiplicity of Pi/2 !"));
 #endif
 			return 1.0 / tan(x);
 		}
@@ -258,7 +259,7 @@ namespace Common {
 				}
 			}
 
-			throw ErrMsgException<Message<>>("Common::MathExt::cmp(const double x1, const double x2, const double eps) failed to compare values!");
+			throw ErrMsgException<Message<string>>(string("Common::MathExt::cmp(const double x1, const double x2, const double eps) failed to compare values!"));
 		}
 
 		template<class T> inline const T& min(const T& x1, const T& x2) {
@@ -303,7 +304,7 @@ namespace Common {
 #ifndef MATHEXT_NO_CHECKS
 
 			if (n == 0) {
-				throw ErrMsgException<Message<>>("Common::MathExt::minIdx(const V<T> &v) the input vector is empty!");
+				throw ErrMsgException<Message<string>>(string("Common::MathExt::minIdx(const V<T> &v) the input vector is empty!"));
 				return -1;
 			}
 #endif
@@ -364,7 +365,7 @@ namespace Common {
 			int n = v.size();
 #ifndef MATHEXT_NO_CHECKS
 			if (n == 0) {
-				throw ErrMsgException<Message<>>("Common::MathExt::max(const V<T> &v) the input vector is empty!");
+				throw ErrMsgException<Message<string>>(string("Common::MathExt::max(const V<T> &v) the input vector is empty!"));
 				return -1;
 			}
 #endif			
@@ -394,7 +395,7 @@ namespace Common {
 #ifndef MATHEXT_NO_CHECKS			
 
 			if (n == 0) {
-				throw ErrMsgException<Message<>>("Common::MathExt::sum(V<T>& v) : Summing an empty vector!!!");
+				throw ErrMsgException<Message<string>>(string("Common::MathExt::sum(V<T>& v) : Summing an empty vector!!!"));
 				return T();
 			}
 

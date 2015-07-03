@@ -68,7 +68,7 @@ namespace Common {
 		private:
 
 			// Hide the < operator in this class
-			virtual bool operator<(const T&) final {throw ErrMsgException<Message<> >("Forbidden usage of ComparableEqTo::operator<"); return false;};
+			virtual bool operator<(const T&) final {throw ErrMsgException<Message<string> >(string("Forbidden usage of ComparableEqTo::operator<")); return false;};
 			
 			/** We do not need a copy constructor for the interface. */
 			ComparableEqTo(const ComparableEqTo&) : ComparableTo<T>() {}

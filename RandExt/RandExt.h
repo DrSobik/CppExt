@@ -39,7 +39,7 @@ namespace Common {
 		template <template<class, class...> class V, class T, class... otherT> void randPermut(V<T, otherT...>& permut);
 
 		template <template<class, class...> class V, class... otherVT> int probSelectIdx(const V<double, otherVT...>& prob, const double& probPow = 1.0);
-		template <template<class, class...> class V, class T, class... otherVT, class... otherProbT> int probSelec(const V<T, otherVT...> v, const V<double, otherProbT...>& prob, const double& probPow = 1.0);
+		template <template<class, class...> class V, class T, class... otherVT, class... otherProbT> int probSelect(const V<T, otherVT...> v, const V<double, otherProbT...>& prob, const double& probPow = 1.0);
 
 		/**********************************************************************/
 
@@ -74,7 +74,7 @@ namespace Common {
 
 			/** Set the seeds of the generator and initialize it. */
 			void setSeeds(const std::vector<unsigned int>& seeds) {
-				if (seeds.size() == 0) throw ErrMsgException<Message<>>("Common::Rand::RandGen::setSeeds : No seeds provided!!!", this);
+				if (seeds.size() == 0) throw ErrMsgException<Message<string>>(string("Common::Rand::RandGen::setSeeds : No seeds provided!!!"), this);
 				this->seeds = seeds;
 				init();
 			}
@@ -337,14 +337,14 @@ namespace Common {
 		/**********************************************************************/
 
 		/**********************************************************************/
-		
+
 		//int rSeed = 0; // Initial seed 
-		thread_local RandGenMT RNG(1872638163);
+		thread_local RandGenMT RNG(1872638163); 
 
 		/**********************************************************************/
-		
+
 		/**********************************************************************/
-		
+
 		inline void rndSeed(const unsigned int& s) {
 			//qsrand(s); //std::srand(s);
 
@@ -355,7 +355,7 @@ namespace Common {
 
 		inline unsigned int rndSeed() {
 			//return rSeed;
-			if (RNG.getSeeds().size() == 0) throw ErrMsgException<Message<>>("int Common::Rand::rndSeed() : No seed set!");
+			if (RNG.getSeeds().size() == 0) throw ErrMsgException<Message<string>>(string("int Common::Rand::rndSeed() : No seed set!"));
 
 			return RNG.getSeeds()[0];
 		}
@@ -381,9 +381,9 @@ namespace Common {
 		}
 
 		/**********************************************************************/
-		
+
 		/**********************************************************************/
-		
+
 		template <template<class, class...> class V, class T, class... otherT> inline void randPermut(V<T, otherT...>& permut) {
 			int n = permut.size();
 			int i;
@@ -433,17 +433,17 @@ namespace Common {
 			}
 
 			if (i == n) {
-				throw ErrMsgException<Message<>>("Common::MathExt::probSelect : Failed to find interval with the point selecting randomly!");
+				throw ErrMsgException<Message<string>>(string("Common::MathExt::probSelect : Failed to find interval with the point selecting randomly!"));
 				return rndInt(0, n - 1);
 			}
 
 			return i;
 		}
 
-		template <template<class, class...> class V, class T, class... otherVT, class... otherProbT> int probSelec(const V<T, otherVT...> v, const V<double, otherProbT...>& prob, const double& probPow) {
+		template <template<class, class...> class V, class T, class... otherVT, class... otherProbT> int probSelect(const V<T, otherVT...> v, const V<double, otherProbT...>& prob, const double& probPow) {
 
-			int idx = Rand::probSelectIdx(prob, probPow); 
-			
+			int idx = Rand::probSelectIdx(prob, probPow);
+
 			return v[idx];
 
 		}
