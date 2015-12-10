@@ -13,6 +13,12 @@
 #include "MathExt"
 
 #include <vector>
+#include <algorithm>
+
+#include <iostream>
+
+// For testing
+//#include <QThread>
 
 using namespace Common;
 using namespace Common::Interfaces;
@@ -31,6 +37,7 @@ namespace Common {
 
 		void rndSeed(const unsigned int& s);
 		unsigned int rndSeed();
+		unsigned int rndMaxInt();
 		unsigned int rndInt();
 		int rndInt(const int& start, const int& finish);
 		double rndDouble();
@@ -39,7 +46,7 @@ namespace Common {
 		template <template<class, class...> class V, class T, class... otherT> void randPermut(V<T, otherT...>& permut);
 
 		template <template<class, class...> class V, class... otherVT> int probSelectIdx(const V<double, otherVT...>& prob, const double& probPow = 1.0);
-		template <template<class, class...> class V, class T, class... otherVT, class... otherProbT> int probSelect(const V<T, otherVT...> v, const V<double, otherProbT...>& prob, const double& probPow = 1.0);
+		template <template<class, class...> class V, class T, class... otherVT, class... otherProbT> T& probSelect(const V<T, otherVT...> v, const V<double, otherProbT...>& prob, const double& probPow = 1.0);
 
 		/**********************************************************************/
 
@@ -76,6 +83,18 @@ namespace Common {
 			void setSeeds(const std::vector<unsigned int>& seeds) {
 				if (seeds.size() == 0) throw ErrMsgException<Message<string>>(string("Common::Rand::RandGen::setSeeds : No seeds provided!!!"), this);
 				this->seeds = seeds;
+				
+				/*
+				std::cout << std::endl << std::endl << "Setting seeds" << std::endl;
+				std::cout << "Thread: " << QThread::currentThread() << std::endl;
+				std::cout << "Object: " << this << std::endl;
+				
+				for (unsigned int i = 0 ; i < (unsigned int) this->seeds.size() ;i++ ){
+					std::cout << "Seed: " << this->seeds[i] << std::endl;
+				}
+				getchar();
+				 */
+				
 				init();
 			}
 
@@ -86,6 +105,18 @@ namespace Common {
 			}
 
 			const std::vector<unsigned int>& getSeeds() {
+				
+				/*
+				std::cout << std::endl << std::endl << "Getting seeds" << std::endl;
+				std::cout << "Thread: " << QThread::currentThread() << std::endl;
+				std::cout << "Object: " << this << std::endl;
+				
+				for (unsigned int i = 0 ; i < (unsigned int) this->seeds.size() ;i++ ){
+					std::cout << "Seed: " << this->seeds[i] << std::endl;
+				}
+				getchar();
+				*/
+				
 				return seeds;
 			}
 
@@ -217,11 +248,16 @@ namespace Common {
 
 		public:
 
-			RandGenMT(const RandGenMT& orig) : BasicObject(), RandGen(orig), GeneralRandGen(orig), ClonableTo<RandGenMT>() { }
+			RandGenMT(const RandGenMT& orig) : BasicObject(), RandGen(orig), GeneralRandGen(orig), ClonableTo<RandGenMT>() { 
+				idx = orig.idx;
+				std::copy(orig.MT, orig.MT + 624, MT);
+				/*std::cout << "Created RandGenMT copy" << std::endl; getchar();*/ 
+			}
 
-			RandGenMT(const std::vector<unsigned int>& seeds) : GeneralRandGen(seeds) { }
+			RandGenMT(const std::vector<unsigned int>& seeds) : GeneralRandGen(seeds) { /*std::cout << "Created RandGenMT seeds" << std::endl; getchar();*/ }
 
-			RandGenMT(const unsigned int& seed) {
+			RandGenMT(const unsigned int& seed) {			
+				//std::cout << "Created RandGenMT seed" << std::endl; getchar();
 				setSeed(seed);
 			}
 
@@ -339,7 +375,7 @@ namespace Common {
 		/**********************************************************************/
 
 		//int rSeed = 0; // Initial seed 
-		static thread_local RandGenMT RNG(1872638163); 
+		extern thread_local RandGenMT RNG; // Declare it as extern thread_local so that there is only one RNG over all translation units but it is thread-local
 
 		/**********************************************************************/
 
@@ -360,6 +396,12 @@ namespace Common {
 			return RNG.getSeeds()[0];
 		}
 
+		inline unsigned int rndMaxInt() {
+
+			return RNG.getMaxGenInt();
+			
+		}
+		
 		inline unsigned int rndInt() {
 			//return qrand(); //std::rand();
 
@@ -368,12 +410,12 @@ namespace Common {
 
 		inline int rndInt(const int& start, const int& finish) {
 			//return start + round((double) rndInt() / (double) RAND_MAX * (double) (finish - start));
-			return start + round((double) Rand::rndInt() / (double) RNG.getMaxGenInt() * (double) (finish - start));
+			return start + round((double) Rand::rndInt() / (double) rndMaxInt() * (double) (finish - start));
 		}
 
 		inline double rndDouble() {
 			//return (double) Rand::rndInt() / double(RAND_MAX);
-			return (double) Rand::rndInt() / double(RNG.getMaxGenInt());
+			return (double) Rand::rndInt() / double(rndMaxInt());
 		}
 
 		inline double rndDouble(const double& start, const double& finish) {
@@ -440,11 +482,11 @@ namespace Common {
 			return i;
 		}
 
-		template <template<class, class...> class V, class T, class... otherVT, class... otherProbT> int probSelect(const V<T, otherVT...> v, const V<double, otherProbT...>& prob, const double& probPow) {
+		template <template<class, class...> class V, class T, class... otherVT, class... otherProbT> T& probSelect(const V<T, otherVT...> v, const V<double, otherProbT...>& prob, const double& probPow) {
 
 			int idx = Rand::probSelectIdx(prob, probPow);
 
-			return v[idx];
+			return (T&) v[idx];
 
 		}
 

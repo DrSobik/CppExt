@@ -42,7 +42,9 @@
 #include <QtCore/qobjectdefs.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qglobal.h>
-#include <qt5/QtCore/qmutex.h>
+//#include <qt5/QtCore/qmutex.h>
+
+#include<QMutex>
 
 using namespace std;
 
@@ -1064,6 +1066,8 @@ class ThreadRunnableLocStor : public Object<QObject>, RunnableIn<QThread> {
 	Q_OBJECT
 public:
 
+	unsigned int ID;
+	
 	ThreadRunnableLocStor() {
 
 		connect(&env, SIGNAL(started()), this, SLOT(runActions()));
@@ -1089,23 +1093,30 @@ public slots:
 
 		QTextStream out(stdout);
 
-		Math::uint64 numExp = 1000000000;
+		Math::uint64 numExp = 10;//0000000;
 
+		int curVal;
+		
+		Rand::rndSeed(ID);
+		
+		out << objectName() << "(" << QThread::currentThread() << ")" << ": rndSeed = " << Rand::rndSeed() << endl;
+		//getchar();
+		
 		for (Math::uint64 i = 0; i < numExp; i++) {
 
-			//out << objectName() << ": " << Rand::rndInt() << endl;
-			Rand::rndInt();
+			out << objectName() << ": " << Rand::rndInt() << endl;
+			curVal = Rand::rndInt();
 
-			//locGenVals << curVal;
+			locGenVals << curVal;
 		}
 
 		QMutex mutex;
 		mutex.lock();
-		//out << "GenVals: ";
-		//for (int i = 0; i < locGenVals.size(); i++) {
-		//	out << locGenVals[i] << " ";
-		//}
-		//out << endl;
+		out << "GenVals: ";
+		for (int i = 0; i < locGenVals.size(); i++) {
+			out << locGenVals[i] << " ";
+		}
+		out << endl;
 		out << "Generated rand nums: " << locGenVals.size() << endl;
 		mutex.unlock();
 
@@ -1147,7 +1158,7 @@ void testSigSlot() {
 	cls.qtSig.connect(&cs, &ClassSlot::slotQt);
 	cls.qtSig();
 
-	getchar();
+	//getchar();
 
 }
 
@@ -1503,8 +1514,10 @@ void mathTest() {
 	out << "Min test : " << Math::min(1.5, 2.6) << endl;
 
 	QVector<double> someDVector;
-	someDVector << 1 << 2 << 3 << 4 << 5.0;
-
+	someDVector << 1.1 << 2.2 << 3.3 << 4.4 << 5.5;
+	QVector<double> someProbVector;
+	someProbVector << 0.1 << 0.2 << 0.25 << 0.35 << 0.1;
+	
 	vector<double> someStdVector;
 	someStdVector = someDVector.toStdVector();
 
@@ -1523,6 +1536,9 @@ void mathTest() {
 
 	out << endl;
 
+	out << "Randomly selected value: " << Rand::probSelect(someDVector,someProbVector) << endl;
+	getchar();
+	
 	Math::sort(someDVector);
 
 	for (int i = 0; i < someDVector.size(); i++) {
@@ -1580,11 +1596,16 @@ void mathTest() {
 void randGenTest() {
 	QTextStream out(stdout);
 
-	RandGenMT rgmt(1872638163);
+	out << "####  randGenTest ...  ####" << endl;
+	
+	//RandGenMT rgmt(1872638163);
+	RandGenMT rgmt(654321);
 
-	//for (int i = 0; i < 10000; i++) {
-	//	out << rgmt.rndFloat() << endl;
-	//}
+	RandGenMT rgmtclone(rgmt);
+	
+	for (int i = 0; i < 100; i++) {
+		out << rgmt.rndFloat() << " - " << rgmtclone.rndFloat() << endl;
+	}
 
 	unsigned int numRndClasses = 10;
 	unsigned int numRndTests = 5000000;
@@ -1610,17 +1631,34 @@ void randGenTest() {
 	out << "sumFreq : " << sumFreq << endl;
 
 	out << "maxGenInt : " << rgmt.getMaxGenInt() << endl;
+	
+	out << "Global rndSeed: " << Rand::rndSeed() << endl;
+	
+	out << "####  randGenTest done  ####" << endl;
 }
 
 void randGenTestLocStor() {
+	QTextStream out(stdout);
+	out << "####  randGenTestLocStor ...  ####" << endl;
+	
+	out << "randGenTestLocStor setting Rand::rndSeed ..." << endl;
+	Rand::rndSeed(123456789);
+	out << "The returned seed: " << Rand::rndSeed() << endl;
+	
 	ThreadRunnableLocStor trls1;
 	ThreadRunnableLocStor trls2;
 
 	trls1.setObjectName("trLS 1");
 	trls2.setObjectName("trLS 2");
 
+	trls1.ID = 1357;
+	trls2.ID = 1357;//2468;
+	
 	trls1.run();
 	trls2.run();
+	
+	
+	out << "####  randGenTestLocStor done  ####" << endl;
 }
 
 void senderReceiverTest() {
@@ -1699,6 +1737,6 @@ int main(int argc, char *argv[]) {
 	testSigSlot();
 
 	randGenTestLocStor();
-
+	
 	return 0; //app.exec();
 }

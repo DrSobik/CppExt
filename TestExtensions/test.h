@@ -10,6 +10,10 @@
 
 #include "Messages"
 
+#include "RandExt"
+
+using namespace Common::Rand;
+
 class Test{
 public:
 	Test ();
