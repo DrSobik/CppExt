@@ -6,7 +6,7 @@
  */
 
 #ifndef RANDEXT_H
-#define	RANDEXT_H
+#define RANDEXT_H
 
 #include "Object"
 #include "Clonable"
@@ -81,9 +81,9 @@ namespace Common {
 
 			/** Set the seeds of the generator and initialize it. */
 			void setSeeds(const std::vector<unsigned int>& seeds) {
-				if (seeds.size() == 0) throw ErrMsgException<Message<string>>(string("Common::Rand::RandGen::setSeeds : No seeds provided!!!"), this);
+				if (seeds.size() == 0) throw ErrMsgException<Message < string >> (string("Common::Rand::RandGen::setSeeds : No seeds provided!!!"), this);
 				this->seeds = seeds;
-				
+
 				/*
 				std::cout << std::endl << std::endl << "Setting seeds" << std::endl;
 				std::cout << "Thread: " << QThread::currentThread() << std::endl;
@@ -94,7 +94,7 @@ namespace Common {
 				}
 				getchar();
 				 */
-				
+
 				init();
 			}
 
@@ -105,7 +105,7 @@ namespace Common {
 			}
 
 			const std::vector<unsigned int>& getSeeds() {
-				
+
 				/*
 				std::cout << std::endl << std::endl << "Getting seeds" << std::endl;
 				std::cout << "Thread: " << QThread::currentThread() << std::endl;
@@ -115,8 +115,8 @@ namespace Common {
 					std::cout << "Seed: " << this->seeds[i] << std::endl;
 				}
 				getchar();
-				*/
-				
+				 */
+
 				return seeds;
 			}
 
@@ -248,15 +248,15 @@ namespace Common {
 
 		public:
 
-			RandGenMT(const RandGenMT& orig) : BasicObject(), RandGen(orig), GeneralRandGen(orig), ClonableTo<RandGenMT>() { 
+			RandGenMT(const RandGenMT& orig) : BasicObject(), RandGen(orig), GeneralRandGen(orig), ClonableTo<RandGenMT>() {
 				idx = orig.idx;
 				std::copy(orig.MT, orig.MT + 624, MT);
-				/*std::cout << "Created RandGenMT copy" << std::endl; getchar();*/ 
+				/*std::cout << "Created RandGenMT copy" << std::endl; getchar();*/
 			}
 
 			RandGenMT(const std::vector<unsigned int>& seeds) : GeneralRandGen(seeds) { /*std::cout << "Created RandGenMT seeds" << std::endl; getchar();*/ }
 
-			RandGenMT(const unsigned int& seed) {			
+			RandGenMT(const unsigned int& seed) {
 				//std::cout << "Created RandGenMT seed" << std::endl; getchar();
 				setSeed(seed);
 			}
@@ -391,7 +391,7 @@ namespace Common {
 
 		inline unsigned int rndSeed() {
 			//return rSeed;
-			if (RNG.getSeeds().size() == 0) throw ErrMsgException<Message<string>>(string("int Common::Rand::rndSeed() : No seed set!"));
+			if (RNG.getSeeds().size() == 0) throw ErrMsgException<Message < string >> (string("int Common::Rand::rndSeed() : No seed set!"));
 
 			return RNG.getSeeds()[0];
 		}
@@ -399,9 +399,9 @@ namespace Common {
 		inline unsigned int rndMaxInt() {
 
 			return RNG.getMaxGenInt();
-			
+
 		}
-		
+
 		inline unsigned int rndInt() {
 			//return qrand(); //std::rand();
 
@@ -453,11 +453,24 @@ namespace Common {
 
 			total = 0.0;
 
-			for (int i = 0; i < n; i++) {
-				intBegin[i] = total;
-				intEnd[i] = total + pow(prob[i], probPow);
-				//Debugger::info << prob[i] << " - " << probPow << "-" << ENDL;
-				total = intEnd[i]; //+= pow(prob[i], probPow);
+			if (probPow == 1.0) { // Do not call the pow function
+
+				for (int i = 0; i < n; i++) {
+					intBegin[i] = total;
+					intEnd[i] = total + prob[i];
+					//Debugger::info << prob[i] << " - " << probPow << "-" << ENDL;
+					total = intEnd[i]; //+= pow(prob[i], probPow);
+				}
+
+			} else { // Call the pow function
+
+				for (int i = 0; i < n; i++) {
+					intBegin[i] = total;
+					intEnd[i] = total + Math::pow(prob[i], probPow);
+					//Debugger::info << prob[i] << " - " << probPow << "-" << ENDL;
+					total = intEnd[i]; //+= pow(prob[i], probPow);
+				}
+
 			}
 
 			//for (int i = 0; i < n; i++) {
@@ -475,7 +488,7 @@ namespace Common {
 			}
 
 			if (i == n) {
-				throw ErrMsgException<Message<string>>(string("Common::MathExt::probSelect : Failed to find interval with the point selecting randomly!"));
+				throw ErrMsgException<Message < string >> (string("Common::MathExt::probSelectIdx : Failed to find interval with the point selecting randomly!"));
 				return rndInt(0, n - 1);
 			}
 
@@ -499,5 +512,5 @@ namespace Common {
 
 
 
-#endif	/* RANDEXT_H */
+#endif /* RANDEXT_H */
 
