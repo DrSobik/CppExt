@@ -1,0 +1,6 @@
+#ifndef SIGNALS
+#define	SIGNALS
+
+#include "../Signals/Signal.h"
+
+#endif
