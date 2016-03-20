@@ -17,6 +17,8 @@
 #include <unordered_map>
 #include <functional>
 #include <vector>
+#include <atomic>
+#include <mutex>
 
 #include "Object"
 #include "Clonable"
@@ -32,6 +34,8 @@
 #include "MathExt"
 #include "RandExt"
 #include "SenderReceiver"
+#include "Signals"
+#include "Operationable"
 
 #include "test.h"
 
@@ -42,7 +46,6 @@
 #include <QtCore/qobjectdefs.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qglobal.h>
-//#include <qt5/QtCore/qmutex.h>
 
 #include<QMutex>
 
@@ -53,11 +56,20 @@ using namespace Common::Interfaces;
 using namespace Common::Exceptions;
 using namespace Common::SmartPointers;
 using namespace Common::Rand;
+using namespace Common::Signals;
 
 class OB1 : public QObject {
+public:
+	OB1() :
+	QObject() { }
+
 };
 
 class OB2 : public QObject {
+public:
+	OB2() :
+	QObject(0) { }
+
 };
 
 class D : public OB1 {
@@ -356,6 +368,32 @@ public:
 
 };
 
+class PrePostInc : public PostIncrementable<PrePostInc>, public PreIncrementable<PrePostInc> {
+public:
+	int x;
+
+	PrePostInc() : PostIncrementable(), PreIncrementable() { }
+
+	PrePostInc(const PrePostInc& other) : PrePostInc() {
+		x = other.x;
+	}
+
+	PrePostInc(const int& other) {
+		x = other;
+	}
+
+	virtual PrePostInc operator++(int) override {
+		x++;
+		return *this;
+	}
+	
+	virtual PrePostInc& operator++() override {
+		++x;
+		return *this;
+	}
+
+};
+
 class Inv : public Inversible<Inv&> {
 public:
 	double x;
@@ -365,70 +403,16 @@ public:
 		if (x == 0.0) {
 			x = 10E300;
 
-			MessageWritableTo<QTextStream,QString> errMsg;
+			MessageWritableTo<QTextStream, QString> errMsg;
 
 			errMsg.setMsgData("Inv::void inv() : division by 0!");
 
-			throw ErrMsgException<MessageWritableTo<QTextStream,QString> >(errMsg);
+			throw ErrMsgException<MessageWritableTo<QTextStream, QString> >(errMsg);
 		};
 
 		x = 1.0 / x;
 
 		return *this;
-	}
-
-};
-
-class ThreadRunnable : public Object<QObject>, RunnableIn<QThread> {
-
-	Q_OBJECT
-public:
-
-	ThreadRunnable() {
-
-		connect(&env, SIGNAL(started()), this, SLOT(runActions()));
-
-		this->moveToThread(&env);
-
-	}
-
-	virtual ~ThreadRunnable() {
-
-		env.quit();
-		env.wait();
-
-	}
-
-signals:
-
-	void sigFinished();
-
-public slots:
-
-	void runActions() {
-
-		QTextStream out(stdout);
-
-		out << "Running object : " << objectName() << endl;
-
-		double x = 0.00000000000000000000000000000000000000000000001;
-		for (int i = 0; i < 100000000; i++) {
-			x += sqrt(x) + pow(x, 0.000001);
-		}
-
-		out << x << endl;
-
-		out << "Finished running : " << objectName() << endl;
-
-
-		emit ThreadRunnable::sigFinished();
-
-	}
-
-	void run() {
-
-		env.start();
-
 	}
 
 };
@@ -898,11 +882,84 @@ void functionSlot1(const int&) {
 	qDebug("functionSlot1");
 }
 
+double functionSlot2(const int&) {
+	qDebug("functionSlot2");
+
+	return 0.0;
+}
+
+void functionSlotOther(const int&) {
+	qDebug("functionSlotOther");
+}
+
+void functionSlotQt1() {
+	qDebug("functionSlotQt1");
+}
+
+double functionSlotQt2() {
+	qDebug("functionSlotQt2");
+
+	return 0.0;
+}
+
+void functionSlotQtOther() {
+	qDebug("functionSlotQtOther");
+}
+
 class FunctorSlot : public Functor<void, int> {
 public:
 
+	int num;
+
+	FunctorSlot() { }
+
+	FunctorSlot(const FunctorSlot&) : Functor() { }
+
 	void operator()(const int&) override {
-		qDebug("FunctorSlot");
+		std::cout << QString("FunctorSlot: " + QString::number(num)).toStdString().data() << std::endl;
+	}
+
+};
+
+class FunctorSlotD : public Functor<double, int> {
+public:
+
+	FunctorSlotD() { }
+
+	FunctorSlotD(const FunctorSlotD&) : Functor() { }
+
+	double operator()(const int&) override {
+		qDebug("FunctorSlotD");
+
+		return 0.0;
+	}
+
+};
+
+class FunctorSlotQt1 : public Functor<void> {
+public:
+
+	FunctorSlotQt1() { }
+
+	FunctorSlotQt1(const FunctorSlotQt1&) : Functor() { }
+
+	void operator()() override {
+		qDebug("FunctorSlotQt1");
+	}
+
+};
+
+class FunctorSlotQt2 : public Functor<int> {
+public:
+
+	FunctorSlotQt2() { }
+
+	FunctorSlotQt2(const FunctorSlotQt2&) : Functor() { }
+
+	int operator()() override {
+		qDebug("FunctorSlotQt2");
+
+		return 10;
 	}
 
 };
@@ -915,15 +972,15 @@ public:
 	ClassSlot() { }
 
 	void someSlot(const int&) {
-		qDebug("someSlot");
+		qDebug("ClassSlot::someSlot");
 	}
 
 	void someSlot1(const int&) {
-		qDebug("someSlot1");
+		qDebug("ClassSlot::someSlot1");
 	}
 
 	void someSlotStr(const string&) {
-		qDebug("someSlotStr");
+		qDebug("ClassSlot::someSlotStr");
 	}
 
 public slots:
@@ -934,96 +991,17 @@ public slots:
 
 };
 
-template<class...argT> class Signal : public Functor<void, argT...> {
-public:
-
-	typedef void(*FunctionPtr)(const argT&...);
-	typedef Functor<void, argT...>* FunctorPtr;
-	typedef void(BasicObject::*MethodPtr)(const argT&...);
-
-private:
-
-	std::vector<FunctionPtr> functionSlots; // Functions that will be called on signal
-	std::vector<FunctorPtr> functorSlots; // Functors that will be called on signal
-
-	std::vector<std::pair<BasicObject*, void(BasicObject::*)(const argT&...) >> methodSlots; // Object methods to be called on signal
-
-public:
-
-	Signal() { }
-
-	/** Connect function slot. */
-	virtual void connect(FunctionPtr function) {
-
-		functionSlots.push_back(function);
-
-	}
-
-	/** Connect functor slot. */
-	virtual void connect(FunctorPtr functor) {
-
-		functorSlots.push_back(functor);
-
-	}
-
-	/** Connect method slot. */
-	template<class receiverT, class methodT> void connect(receiverT* obj, methodT mPtr) {
-
-		std::pair < BasicObject*, MethodPtr > slotPair;
-
-		slotPair.first = obj;
-
-		slotPair.second = MethodPtr(mPtr);
-
-		methodSlots.push_back(slotPair);
-
-	}
-
-	virtual void operator()(const argT&... args) {
-
-		// Call all function slots
-		FunctionPtr curFunctionPtr;
-
-		for (unsigned int i = 0; i < functionSlots.size(); i++) {
-			curFunctionPtr = functionSlots[i];
-
-			curFunctionPtr(args...);
-		}
-
-		// Call all functor slots
-		FunctorPtr curFunctorPtr;
-
-		for (unsigned int i = 0; i < functorSlots.size(); i++) {
-			curFunctorPtr = functorSlots[i];
-
-			(*curFunctorPtr)(args...);
-		}
-
-		// Call all method slots
-		BasicObject* curObj;
-		void(BasicObject::*curMethod) (const argT&...);
-
-		for (unsigned int i = 0; i < methodSlots.size(); i++) {
-			curObj = methodSlots[i].first;
-			curMethod = methodSlots[i].second;
-
-			// Call the method
-			(curObj->*curMethod)(args...);
-		}
-
-	}
-
-};
-
 template<class objT, class...argT> class QtSignal : public Functor<void, argT...> {
 private:
 
+	//typedef void(*FunctionPtr)(const argT&...);
+	//typedef Functor<void, argT...>* FunctorPtr;
 	typedef void(objT::*QtMethodPtr)(const argT&...);
 
 	objT* sender;
 	QtMethodPtr signal;
 
-	QtSignal() : Signal<void, argT...>() { }
+	QtSignal() : Functor<void, argT...>() { }
 
 public:
 
@@ -1032,8 +1010,46 @@ public:
 		this->signal = signal;
 	}
 
-	template<class receiverT, class methodT> void connect(receiverT* o, methodT qtM) {
-		QObject::connect(this->sender, this->signal, o, qtM);
+	virtual ~QtSignal() { }
+
+	/** Connect Qt member slots. */
+	template<class receiverT, typename methodT> void connect(receiverT* o, methodT qtM, bool establish = true) {
+		if (establish) {
+			QObject::connect(this->sender, this->signal, o, qtM);
+		} else {
+			// Do nothing so far: QObject::disconnect acts weird here
+		}
+	}
+
+	template<class receiverT, typename methodT> void disconnect(receiverT* o, methodT qtM) {
+		QObject::disconnect(this->sender, this->signal, o, qtM);
+	}
+
+	/** Connect function slot. */
+	template<class objectT> void connect(objectT& obj) {
+
+		QObject::connect(this->sender, this->signal, obj);
+
+	}
+
+	/** Disconnect function slot. */
+	template<class objectT> void disconnect(objectT& obj) {
+
+		QObject::disconnect(this->sender, this->signal, obj);
+
+	}
+
+	/** Connect other signal. */
+	void connect(QtSignal& other) {
+
+		QObject::connect(this->sender, this->signal, other.sender, other.signal);
+
+	}
+
+	void disconnect(QtSignal& other) {
+
+		QObject::disconnect(this->sender, this->signal, other.sender, other.signal);
+
 	}
 
 	virtual void operator()(const argT&... args) {
@@ -1047,27 +1063,87 @@ class ClassWithSig : public QObject, public BasicObject {
 
 public:
 
-	Signal<int> sig;
+	Signal<void, int> sig;
+	Signal<void, int> sigOther;
+	Signal<double, int> sigD;
 	QtSignal<ClassWithSig> qtSig;
+	QtSignal<ClassWithSig> qtSigOther;
 
-	ClassWithSig() : qtSig(this, &ClassWithSig::sigQt) { }
+	ClassWithSig() : qtSig(this, &ClassWithSig::sigQt), qtSigOther(this, &ClassWithSig::sigQtOther) { }
 
 signals:
 	void sigQt();
+	void sigQtOther();
 
 };
+
+class ThreadRunnable : public Object<QObject>, RunnableIn<QThread> {
+	Q_OBJECT
+public:
+
+	QtSignal<ThreadRunnable> finishedQt; // Qt finish signal
+
+	ThreadRunnable() : finishedQt(this, &ThreadRunnable::sigFinished) {
+
+		connect(&env, SIGNAL(started()), this, SLOT(runActions()));
+
+		this->moveToThread(&env);
+
+	}
+
+	virtual ~ThreadRunnable() {
+
+		env.quit();
+		env.wait();
+
+	}
+
+signals:
+
+	void sigFinished();
+
+public slots:
+
+	void runActions() {
+
+		QTextStream out(stdout);
+
+		out << "Running object : " << objectName() << endl;
+
+		double x = 0.00000000000000000000000000000000000000000000001;
+		for (unsigned long int i = 0; i < 1000000; i++) {
+			x += sqrt(x) + pow(x, 0.000001);
+		}
+
+		out << x << endl;
+
+		out << "Finished running : " << objectName() << endl;
+
+
+		//emit ThreadRunnable::sigFinished();
+		finishedQt();
+
+	}
+
+	void run() {
+
+		env.start();
+
+	}
+
+};
+
 
 /******************************************************************************/
 
 thread_local QVector<unsigned int> locGenVals;
 
 class ThreadRunnableLocStor : public Object<QObject>, RunnableIn<QThread> {
-
 	Q_OBJECT
 public:
 
 	unsigned int ID;
-	
+
 	ThreadRunnableLocStor() {
 
 		connect(&env, SIGNAL(started()), this, SLOT(runActions()));
@@ -1093,15 +1169,15 @@ public slots:
 
 		QTextStream out(stdout);
 
-		Math::uint64 numExp = 10;//0000000;
+		Math::uint64 numExp = 10; //0000000;
 
 		int curVal;
-		
+
 		Rand::rndSeed(ID);
-		
+
 		out << objectName() << "(" << QThread::currentThread() << ")" << ": rndSeed = " << Rand::rndSeed() << endl;
 		//getchar();
-		
+
 		for (Math::uint64 i = 0; i < numExp; i++) {
 
 			out << objectName() << ": " << Rand::rndInt() << endl;
@@ -1142,23 +1218,72 @@ void testSigSlot() {
 
 	QTextStream out(stdout);
 
-	Signal<int> sig;
 	FunctorSlot fs;
+	FunctorSlotD fsD;
+
 	ClassSlot cs;
+
+	fs.num = 1;
+
+	{
+		Signal<void, int> sig;
+		Signal<double, int> sigD;
+
+
+		sig.connect(functionSlot1);
+		sig.connect(functionSlot2);
+		sigD.connect(functionSlot2);
+		sig.connect(fs);
+		sig.connect(fsD);
+		sig.connect(&cs, &ClassSlot::someSlot);
+		sig.connect(&cs, &ClassSlot::someSlot1);
+
+		sig.disconnect(&cs, &ClassSlot::someSlot);
+
+		sig.connect(&cs, &ClassSlot::someSlot);
+		sig.connect(&cs, &ClassSlot::someSlot);
+
+		fs.num = 2;
+
+		sig(10);
+		//sigD(10);
+	}
+
+	//functionSlot1(10);
+	//fs(10);
+	//fsD(10);
+
+	getchar();
+
+	FunctorSlotQt1 fsQt1;
+	FunctorSlotQt2 fsQt2;
+
 	ClassWithSig cls;
 
-	sig.connect(&functionSlot1);
-	sig.connect(&fs);
-	sig.connect(&cs, &ClassSlot::someSlot);
-	sig(10);
-
 	cls.sig.connect(&cs, &ClassSlot::someSlot1);
+	cls.sigOther.connect(functionSlotOther);
+
+	cls.sig.connect(cls.sigOther);
 	cls.sig(10);
+	cls.sigOther(20);
+
+	getchar();
 
 	cls.qtSig.connect(&cs, &ClassSlot::slotQt);
-	cls.qtSig();
+	cls.qtSig.disconnect(&cs, &ClassSlot::slotQt);
 
-	//getchar();
+	cls.qtSig.connect(functionSlotQt1);
+	cls.qtSig.connect(functionSlotQt2);
+	cls.qtSig.connect(fsQt1);
+	cls.qtSig.connect(fsQt2);
+
+	//	cls.qtSigOther.connect(&functionSlotQtOther);
+	cls.qtSig.connect(cls.qtSigOther);
+
+	cls.qtSig();
+	cls.qtSigOther();
+
+	getchar();
 
 }
 
@@ -1374,7 +1499,7 @@ void exceptionTest() {
 
 		Message<string> msg("Hurrey!!! Custom exception!!!");
 
-		throw ErrMsgException<Message<string>>(msg);
+		throw ErrMsgException<Message < string >> (msg);
 		//Message<> ("MessageTest");
 
 		//{
@@ -1420,7 +1545,7 @@ void operationableTest() {
 	inv.x = 0.0;
 	try {
 		inv.inv();
-	} catch (ErrMsgException<MessageWritableTo<QTextStream,QString>>&e) {
+	} catch (ErrMsgException<MessageWritableTo<QTextStream, QString>>&e) {
 		//} catch (MsgException<MessageWritableTo<QTextStream>>&e) {
 		//} catch (Exception<>&e) {
 
@@ -1430,6 +1555,13 @@ void operationableTest() {
 	}
 
 	out << "Result of inversion : " << inv.x << endl;
+	
+	PrePostInc pi;
+	pi.x = 0;
+	pi++;
+	++pi;
+	out << "Result of incrementing : " << pi.x << endl;
+	getchar();
 }
 
 void someClonableTest() {
@@ -1517,7 +1649,7 @@ void mathTest() {
 	someDVector << 1.1 << 2.2 << 3.3 << 4.4 << 5.5;
 	QVector<double> someProbVector;
 	someProbVector << 0.1 << 0.2 << 0.25 << 0.35 << 0.1;
-	
+
 	vector<double> someStdVector;
 	someStdVector = someDVector.toStdVector();
 
@@ -1536,9 +1668,11 @@ void mathTest() {
 
 	out << endl;
 
-	out << "Randomly selected value: " << Rand::probSelect(someDVector,someProbVector) << endl;
-	getchar();
-	
+	for (int i = 0; i < 10; i++) {
+		out << "Randomly selected value: " << Rand::probSelect(someDVector, someProbVector) << endl;
+		//getchar();
+	}
+
 	Math::sort(someDVector);
 
 	for (int i = 0; i < someDVector.size(); i++) {
@@ -1578,18 +1712,42 @@ void mathTest() {
 
 	out << "Size of unsigned int : " << sizeof (long int) << endl;
 
-	out << "MAX_INT : " << Math::MAX_INT << endl;
-	out << "MIN_INT : " << Math::MIN_INT << endl;
-	out << "MAX_UINT : " << Math::MAX_UINT << endl;
-	out << "MIN_UINT : " << Math::MIN_UINT << endl;
+//	out << "MAX_INT : " << Math::MAX_INT << endl;
+//	out << "MIN_INT : " << Math::MIN_INT << endl;
+//	out << "MAX_UINT : " << Math::MAX_UINT << endl;
+//	out << "MIN_UINT : " << Math::MIN_UINT << endl;
 	out << "MAX_INT64 : " << Math::MAX_INT64 << endl;
 	out << "MIN_INT64 : " << Math::MIN_INT64 << endl;
 	out << "MAX_UINT64 : " << Math::MAX_UINT64 << endl;
 	out << "MIN_UINT64 : " << Math::MIN_UINT64 << endl;
+	out << "MAX_INT32 : " << Math::MAX_INT32 << endl;
+	out << "MIN_INT32 : " << Math::MIN_INT32 << endl;
+	out << "MAX_UINT32 : " << Math::MAX_UINT32 << endl;
+	out << "MIN_UINT32 : " << Math::MIN_UINT32 << endl;
 	out << "MAX_INT16 : " << Math::MAX_INT16 << endl;
 	out << "MIN_INT16 : " << Math::MIN_INT16 << endl;
 	out << "MAX_UINT16 : " << Math::MAX_UINT16 << endl;
 	out << "MIN_UINT16 : " << Math::MIN_UINT16 << endl;
+	out << "MAX_INT8 : " << Math::MAX_INT8 << endl;
+	out << "MIN_INT8 : " << Math::MIN_INT8 << endl;
+	out << "MAX_UINT8 : " << Math::MAX_UINT8 << endl;
+	out << "MIN_UINT8 : " << Math::MIN_UINT8 << endl;
+	out << "MAX_INTUNI : " << Math::MAX_INTUNI << endl;
+	out << "MIN_INTUNI : " << Math::MIN_INTUNI << endl;
+	out << "MAX_UINTUNI : " << Math::MAX_UINTUNI << endl;
+	out << "MIN_UINTUNI : " << Math::MIN_UINTUNI << endl;
+
+	QVector<int> vecDup;
+
+	vecDup << 1 << 1 << 2 << 5 << 6 << 7 << 7 << 8 << 8;
+
+	Math::removeDuplicates(vecDup);
+
+	for (int i = 0; i < vecDup.size(); i++) {
+		out << vecDup[i] << endl;
+	}
+
+	getchar();
 
 }
 
@@ -1597,12 +1755,12 @@ void randGenTest() {
 	QTextStream out(stdout);
 
 	out << "####  randGenTest ...  ####" << endl;
-	
+
 	//RandGenMT rgmt(1872638163);
 	RandGenMT rgmt(654321);
 
 	RandGenMT rgmtclone(rgmt);
-	
+
 	for (int i = 0; i < 100; i++) {
 		out << rgmt.rndFloat() << " - " << rgmtclone.rndFloat() << endl;
 	}
@@ -1631,20 +1789,20 @@ void randGenTest() {
 	out << "sumFreq : " << sumFreq << endl;
 
 	out << "maxGenInt : " << rgmt.getMaxGenInt() << endl;
-	
+
 	out << "Global rndSeed: " << Rand::rndSeed() << endl;
-	
+
 	out << "####  randGenTest done  ####" << endl;
 }
 
 void randGenTestLocStor() {
 	QTextStream out(stdout);
 	out << "####  randGenTestLocStor ...  ####" << endl;
-	
+
 	out << "randGenTestLocStor setting Rand::rndSeed ..." << endl;
 	Rand::rndSeed(123456789);
 	out << "The returned seed: " << Rand::rndSeed() << endl;
-	
+
 	ThreadRunnableLocStor trls1;
 	ThreadRunnableLocStor trls2;
 
@@ -1652,12 +1810,12 @@ void randGenTestLocStor() {
 	trls2.setObjectName("trLS 2");
 
 	trls1.ID = 1357;
-	trls2.ID = 1357;//2468;
-	
+	trls2.ID = 1357; //2468;
+
 	trls1.run();
 	trls2.run();
-	
-	
+
+
 	out << "####  randGenTestLocStor done  ####" << endl;
 }
 
@@ -1678,20 +1836,24 @@ void senderReceiverTest() {
 
 }
 
-void threadRunnableTest() {
+void threadRunnableTest(QApplication& app) {
 	QTextStream out(stdout);
 
 	ThreadRunnable tr1;
-	//ThreadRunnable tr2;
+	ThreadRunnable tr2;
+
+	QObject::connect(&tr1, SIGNAL(sigFinished()), &app, SLOT(quit()));
+	QObject::connect(&tr2, SIGNAL(sigFinished()), &app, SLOT(quit()));
+
+	//	tr1.finishedQt.connect(&app, &QApplication::quit);
+	//	tr1.finishedQt.disconnect(&app, &QApplication::quit);
 
 	tr1.setObjectName("tr 1");
-	//tr2.setObjectName("tr 2");
+	tr2.setObjectName("tr 2");
 
-	//tr1.run();
-	//tr2.run();
+	tr1.run();
+	tr2.run();
 
-	//QObject::connect(&tr1, SIGNAL(sigFinished()), &app, SLOT(quit()));
-	//QObject::connect(&tr2, SIGNAL(sigFinished()), &app, SLOT(quit()));
 }
 
 int main(int argc, char *argv[]) {
@@ -1730,13 +1892,13 @@ int main(int argc, char *argv[]) {
 
 	//throw ErrException();
 
-	threadRunnableTest();
+	threadRunnableTest(app);
 
 	testTestSenderReceiver();
 
 	testSigSlot();
 
 	randGenTestLocStor();
-	
-	return 0; //app.exec();
+
+	return app.exec();
 }
