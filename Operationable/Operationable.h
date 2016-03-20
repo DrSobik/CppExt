@@ -467,7 +467,7 @@ namespace Common {
 		template<class T=void> class PostIncrementable : public Operationable {
 		public:
 
-			virtual T operator++(const PostIncrementable&) = 0;
+			virtual T operator++(int) = 0;
 
 		private:
 
@@ -512,7 +512,7 @@ namespace Common {
 		template<class T=void> class PostDecrementable : public Operationable {
 		public:
 
-			virtual T operator--(const PostDecrementable&) = 0;
+			virtual T operator--(int) = 0;
 
 		private:
 
