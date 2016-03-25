@@ -13,7 +13,7 @@ CND_BUILDDIR=build
 CND_DLIB_EXT=so
 NBTMPDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/TestExtensions
+OUTPUT_PATH=builds/Lin64bit/debug/TestExtensions
 OUTPUT_BASENAME=TestExtensions
 PACKAGE_TOP_DIR=TestExtensions/
 

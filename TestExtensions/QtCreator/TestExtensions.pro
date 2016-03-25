@@ -20,13 +20,13 @@ debug{
 }
 
 SOURCES += \
-    ../test.cpp \
-    ../main.cpp \
+    ../src/test.cpp \
+    ../src/main.cpp \
     ../../Debug/DebugExt.cpp \
     ../../RandExt/RandExt.cpp
 
 HEADERS += \
-    ../test.h \
+    ../src/test.h \
     ../../Assignable/Assignable.h \
     ../../Clonable/Clonable.h \
     ../../Comparable/Comparable.h \
