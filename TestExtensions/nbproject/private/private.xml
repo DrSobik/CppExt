@@ -9,20 +9,6 @@
         <group>
             <file>file:/data/Projects/Common/TestExtensions/main.cpp</file>
         </group>
-        <group name="Common">
-            <file>file:/data/Projects/Common/TestExtensions/main.cpp</file>
-            <file>file:/data/Projects/Common/Signals/Signal.h</file>
-            <file>file:/data/Projects/IPPS/CPPALG/Common/Objective.h</file>
-            <file>file:/data/Projects/IPPS/CPPALG/Common/TGScheduler.cpp</file>
-            <file>file:/data/Projects/Common/RandExt/RandExt.h</file>
-            <file>file:/data/Projects/Common/RandExt/RandExt.cpp</file>
-            <file>file:/data/Projects/Common/MathExt/MathExt.h</file>
-            <file>file:/data/Projects/Common/Functor/Functor.h</file>
-            <file>file:/data/Projects/IPPS/CPPALG/Common/Schedule.cpp</file>
-            <file>file:/data/Projects/Common/Object/Object.h</file>
-            <file>file:/data/Projects/IPPS/CPPALG/Common/SBHScheduler.cpp</file>
-            <file>file:/data/Projects/Common/Operationable/Operationable.h</file>
-            <file>file:/data/Projects/IPPS/CPPALG/Common/TGVNSScheduler.cpp</file>
-        </group>
+        <group name="Common"/>
     </open-files>
 </project-private>
