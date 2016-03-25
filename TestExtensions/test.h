@@ -12,7 +12,10 @@
 
 #include "RandExt"
 
+#include "Signals"
+
 using namespace Common::Rand;
+using namespace Common::Signals;
 
 class Test{
 public:
