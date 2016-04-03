@@ -1,1 +1,4 @@
 #include "../RandExt/RandExt.h"
+#include "../RandExt/RandExt_Interfaces.h"
+#include "../RandExt/RandExt_MersenneTwister.h"
+#include "../RandExt/RandExt_LCG.h"

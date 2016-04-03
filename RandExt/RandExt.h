@@ -12,6 +12,9 @@
 #include "Clonable"
 #include "MathExt"
 
+#include "RandExt_MersenneTwister.h"
+
+#include <type_traits>
 #include <vector>
 #include <algorithm>
 
@@ -37,11 +40,11 @@ namespace Common {
 
 		void rndSeed(const Math::uint32& s);
 		Math::uint32 rndSeed();
-		Math::uint32 rndMaxInt();
-		Math::uint32 rndInt();
-		Math::int32 rndInt(const Math::int32& start, const Math::int32& finish);
-		double rndDouble();
-		double rndDouble(const double& start, const double& finish);
+		//Math::uint32 rndMaxInt();
+		//Math::uint32 rndInt();
+		//Math::int32 rndInt(const Math::int32& start, const Math::int32& finish);
+		//double rndDouble();
+		//double rndDouble(const double& start, const double& finish);
 
 		template <template<class, class...> class V, class T, class... otherT> void randPermut(V<T, otherT...>& permut);
 
@@ -296,7 +299,7 @@ namespace Common {
 				}
 			}
 
-			/** Generate a random integer out of [0, 2^32]-1 using the MT19937 algorithm. */
+			/** Generate a random integer out of [0, 2^32-1] using the MT19937 algorithm. */
 			virtual Math::uint32 rndInt() {
 				if (idx == 0) {
 					generateNumbers();
@@ -361,7 +364,7 @@ namespace Common {
 			/** Generate a random integer out of [0, 2^32]-1. */
 			virtual Math::uint32 rndInt() {
 				X = ((a * X + c) & 0xFFFFFFFFFFFFFFFF) >> 32;
-                return (Math::uint32)X;
+				return (Math::uint32)X;
 			}
 
 			using GeneralRandGen::rndInt; // Reuse from IntRandGen
@@ -375,7 +378,10 @@ namespace Common {
 		/**********************************************************************/
 
 		//Math::int32 rSeed = 0; // Initial seed 
-		extern thread_local RandGenMT RNG; // Declare it as extern thread_local so that there is only one RNG over all translation units but it is thread-local
+		//extern thread_local RandGenMT RNG; // Declare it as extern thread_local so that there is only one RNG over all translation units but it is thread-local
+
+		extern thread_local MT19937<Math::uint32> iRNG; // For generation of integers
+		extern thread_local MT19937<double> fRNG; // For generation of floats
 
 		/**********************************************************************/
 
@@ -386,31 +392,59 @@ namespace Common {
 
 			//rSeed = s; // Preserve the initial random seed
 
-			RNG.setSeed(s);
+			//RNG.setSeed(s);
+			iRNG.setSeed(s);
+			fRNG.setSeed(s);
 		}
 
 		inline Math::uint32 rndSeed() {
 			//return rSeed;
-			if (RNG.getSeeds().size() == 0) throw ErrMsgException<Message < string >> (string("Math::int32 Common::Rand::rndSeed() : No seed set!"));
+			//if (RNG.getSeeds().size() == 0) throw ErrMsgException<Message < string >> (string("Math::int32 Common::Rand::rndSeed() : No seed set!"));
 
-			return RNG.getSeeds()[0];
+			//return RNG.getSeeds()[0];
+			return iRNG.getSeed();
 		}
 
+		template <class T = void> inline T rnd();
+
+		template<> inline Math::uint32 rnd<Math::uint32>() {
+			return iRNG.rnd();
+		}
+
+		template<> inline double rnd<double>() {
+			return fRNG.rnd();
+		}
+
+		template <class T = void> inline T rnd(const T&, const T&);
+
+		template<> inline Math::uint32 rnd<Math::uint32>(const Math::uint32& start, const Math::uint32& finish) {
+			return iRNG.rnd(start, finish);
+		}
+
+		template<> inline double rnd<double>(const double& start, const double& finish) {
+			return fRNG.rnd(start, finish);
+		}
+
+
+
+		/*
+		 
 		inline Math::uint32 rndMaxInt() {
 
 			return RNG.getMaxGenInt();
 
-		}
-
+		} 
+		  
 		inline Math::uint32 rndInt() {
 			//return qrand(); //std::rand();
 
 			return RNG.rndInt();
 		}
+		 
 
 		inline Math::int32 rndInt(const Math::int32& start, const Math::int32& finish) {
 			//return start + round((double) rndInt() / (double) RAND_MAX * (double) (finish - start));
-            return start + (Math::int32) round((double) Rand::rndInt() / (double) rndMaxInt() * (double) (finish - start));
+			return start + (Math::int32) round((double) Rand::rndInt() / (double) rndMaxInt() * (double) (finish - start));
 		}
 
 		inline double rndDouble() {
@@ -421,19 +455,21 @@ namespace Common {
 		inline double rndDouble(const double& start, const double& finish) {
 			return start + (finish - start) * Rand::rndDouble();
 		}
+		 */
 
 		/**********************************************************************/
 
 		/**********************************************************************/
 
 		template <template<class, class...> class V, class T, class... otherT> inline void randPermut(V<T, otherT...>& permut) {
-                        Math::int32 n = (Math::int32) permut.size();
+			Math::int32 n = (Math::int32) permut.size();
 			Math::int32 i;
 			Math::int32 j;
 
 			for (i = 1; i < n; i++) {
 				//j = qrand() % (i + 1);
-				j = Rand::rndInt() % (i + 1);
+				//j = Rand::rndInt() % (i + 1);
+				j = Rand::rnd<Math::uint32>() % (i + 1);
 				Math::swap(permut[i], permut[j]);
 			}
 		}
@@ -478,7 +514,8 @@ namespace Common {
 			//    getchar();
 			//}
 
-			double point = Rand::rndDouble(0.0, total);
+			//double point = Rand::rndDouble(0.0, total);
+			double point = Rand::rnd<double>(0.0, total);
 
 			Math::int32 i = 0;
 			for (i = 0; i < n; i++) {
@@ -489,7 +526,8 @@ namespace Common {
 
 			if (i == n) {
 				throw ErrMsgException<Message < string >> (string("Common::MathExt::probSelectIdx : Failed to find interval with the point selecting randomly!"));
-				return rndInt(0, n - 1);
+				//return rndInt(0, n - 1);
+				return rnd<Math::uint32>(0, n - 1);
 			}
 
 			return i;

@@ -37,6 +37,10 @@
 #include "Signals"
 #include "Operationable"
 
+#include "Solver"
+#include "Algorithm"
+#include "Stopable"
+
 #include "test.h"
 
 #include <QTextStream>
@@ -60,6 +64,7 @@ using namespace Common::Signals;
 
 class OB1 : public QObject {
 public:
+
 	OB1() :
 	QObject() { }
 
@@ -67,6 +72,7 @@ public:
 
 class OB2 : public QObject {
 public:
+
 	OB2() :
 	QObject(0) { }
 
@@ -386,7 +392,7 @@ public:
 		x++;
 		return *this;
 	}
-	
+
 	virtual PrePostInc& operator++() override {
 		++x;
 		return *this;
@@ -1180,8 +1186,10 @@ public slots:
 
 		for (Math::uint64 i = 0; i < numExp; i++) {
 
-			out << objectName() << ": " << Rand::rndInt() << endl;
-			curVal = Rand::rndInt();
+			//out << objectName() << ": " << Rand::rndInt() << endl;
+			out << objectName() << ": " << Rand::rnd<Math::uint32>() << endl;
+			//curVal = Rand::rndInt();
+			curVal = Rand::rnd<Math::uint32>();
 
 			locGenVals << curVal;
 		}
@@ -1210,9 +1218,162 @@ public slots:
 
 /******************************************************************************/
 
+/******************************************************************************/
+
+class SomeIterativeSolver : public IterativeSolver<const Math::intUNI&, int, Math::intUNI>, public Stopable<SomeIterativeSolver> {
+public:
+
+	Math::intUNI x;
+
+	SomeIterativeSolver() {
+		x = 0;
+	}
+
+	SomeIterativeSolver(const SomeIterativeSolver&) : IterativeSolver(), Stopable() {
+		x = 0;
+	}
+
+	virtual ~SomeIterativeSolver() { }
+
+	int solve(const Math::intUNI& otherX) override {
+
+		x = otherX;
+
+		for (int i = 0; i < 10; i++) {
+
+			stop(i > 5);
+
+			++(*this);
+		}
+
+		return (int) x;
+	}
+
+	Math::intUNI& operator++() override {
+		x++;
+		x++;
+
+		return (Math::intUNI&) x;
+	}
+
+	void stopActions() override { }
+
+	Math::intUNI getLastResult() {
+		return x;
+	}
+
+private:
+
+protected:
+
+};
+
+/******************************************************************************/
+
+
 #include "main.moc"
 
 /******************************************************************************/
+
+class SomeRG : public Common::Interfaces::RandGen<Math::uintUNI> {
+public:
+
+	SomeRG() { }
+
+	SomeRG(const SomeRG&) : RandGen() { }
+
+	virtual ~SomeRG() { }
+
+	Math::uintUNI rnd() override {
+		return 0;
+	}
+
+	// Expose other used members
+	using Common::Interfaces::RandGen<Math::uintUNI>::rnd;
+
+};
+
+class SomeRGD : public Common::Interfaces::RandGen<double> {
+public:
+
+	SomeRGD() { }
+
+	SomeRGD(const SomeRGD&) : RandGen() { }
+
+	virtual ~SomeRGD() { }
+
+	double rnd() override {
+		return 0.0;
+	}
+
+	// Expose other used members
+	using Common::Interfaces::RandGen<double>::rnd;
+
+};
+
+/*
+class SomeGGRG : public Common::AltRand::GeneralRandGen<Common::Interfaces::RandGen<Math::uintUNI>,Common::Interfaces::RandGen<double>>
+{
+	public:
+
+	SomeGGRG() { }
+
+	SomeGGRG(const SomeRGD&) : GeneralRandGen() { }
+
+	virtual ~SomeGGRG() { }
+
+	Math::uintUNI rnd(const Math::uintUNI& = 0) override {
+		return 0;
+	}
+	
+	double rnd(const double& = 0) override {
+		return 0.0;
+	}
+	
+	// Expose other used members
+	//using Common::Interfaces::RandGen<Math::uintUNI>::rnd;
+
+};
+ */
+
+void testAltRand() {
+
+	SomeRG sRG;
+	SomeRGD sRGD;
+	Common::Rand::MT19937<Math::uint32> rgmt(10);
+	Common::Rand::MT19937<double> rgmtD(10);
+
+	sRG.rnd();
+	sRG.rnd(1, 1);
+
+	sRGD.rnd();
+	sRGD.rnd(1, 1);
+
+	rgmt.rnd();
+
+	rgmtD.rnd();
+}
+
+/******************************************************************************/
+void testSolvers() {
+	QTextStream out(stdout);
+
+	Math::intUNI x = 1;
+
+	SomeIterativeSolver sis;
+
+	try {
+
+		out << "SomeIterativeSolver solution: " << sis.solve(x) << endl;
+
+	} catch (StopException<SomeIterativeSolver>& e) {
+
+		out << "Algorithm was stopped with result: " << sis.getLastResult() << endl;
+
+	}
+
+	getchar();
+}
 
 void testSigSlot() {
 
@@ -1555,7 +1716,7 @@ void operationableTest() {
 	}
 
 	out << "Result of inversion : " << inv.x << endl;
-	
+
 	PrePostInc pi;
 	pi.x = 0;
 	pi++;
@@ -1712,29 +1873,29 @@ void mathTest() {
 
 	out << "Size of unsigned int : " << sizeof (long int) << endl;
 
-//	out << "MAX_INT : " << Math::MAX_INT << endl;
-//	out << "MIN_INT : " << Math::MIN_INT << endl;
-//	out << "MAX_UINT : " << Math::MAX_UINT << endl;
-//	out << "MIN_UINT : " << Math::MIN_UINT << endl;
-	out << "MAX_INT64 : " << Math::MAX_INT64 << endl;
-	out << "MIN_INT64 : " << Math::MIN_INT64 << endl;
-	out << "MAX_UINT64 : " << Math::MAX_UINT64 << endl;
+	//	out << "MAX_INT : " << Math::MAX_INT << endl;
+	//	out << "MIN_INT : " << Math::MIN_INT << endl;
+	//	out << "MAX_UINT : " << Math::MAX_UINT << endl;
+	//	out << "MIN_UINT : " << Math::MIN_UINT << endl;
+	out << "MAX_INT64 : " << Math::MAX_INT64 << " or " << Math::int64(Math::uint64(~Math::uint64(0)) >> 1) << endl;
+	out << "MIN_INT64 : " << Math::MIN_INT64 << " or " << Math::int64(Math::uint64(~(Math::uint64(~Math::uint64(0)) >> 1))) << endl;
+	out << "MAX_UINT64 : " << Math::MAX_UINT64 << " or " << Math::uint64(~Math::uint64(0)) << endl;
 	out << "MIN_UINT64 : " << Math::MIN_UINT64 << endl;
-	out << "MAX_INT32 : " << Math::MAX_INT32 << endl;
-	out << "MIN_INT32 : " << Math::MIN_INT32 << endl;
-	out << "MAX_UINT32 : " << Math::MAX_UINT32 << endl;
+	out << "MAX_INT32 : " << Math::MAX_INT32 << " or " << Math::int32(Math::uint32(~Math::uint32(0)) >> 1) << endl;
+	out << "MIN_INT32 : " << Math::MIN_INT32 << " or " << Math::int32(Math::uint32(~(Math::uint32(~Math::uint32(0)) >> 1))) << endl;
+	out << "MAX_UINT32 : " << Math::MAX_UINT32 << " or " << Math::uint32(~Math::uint32(0)) << endl;
 	out << "MIN_UINT32 : " << Math::MIN_UINT32 << endl;
-	out << "MAX_INT16 : " << Math::MAX_INT16 << endl;
-	out << "MIN_INT16 : " << Math::MIN_INT16 << endl;
-	out << "MAX_UINT16 : " << Math::MAX_UINT16 << endl;
+	out << "MAX_INT16 : " << Math::MAX_INT16 << " or " << Math::int16(Math::uint16(~Math::uint16(0)) >> 1) << endl;
+	out << "MIN_INT16 : " << Math::MIN_INT16 << " or " << Math::int16(Math::uint16(~(Math::uint16(~Math::uint16(0)) >> 1))) << endl;
+	out << "MAX_UINT16 : " << Math::MAX_UINT16 << " or " << Math::uint16(~Math::uint16(0)) << endl;
 	out << "MIN_UINT16 : " << Math::MIN_UINT16 << endl;
-	out << "MAX_INT8 : " << Math::MAX_INT8 << endl;
-	out << "MIN_INT8 : " << Math::MIN_INT8 << endl;
-	out << "MAX_UINT8 : " << Math::MAX_UINT8 << endl;
+	out << "MAX_INT8 : " << Math::MAX_INT8 << " or " << Math::int8(Math::uint8(~Math::uint8(0)) >> 1) << endl;
+	out << "MIN_INT8 : " << Math::MIN_INT8 << " or " << Math::int8(Math::uint8(~(Math::uint8(~Math::uint8(0)) >> 1))) << endl;
+	out << "MAX_UINT8 : " << Math::MAX_UINT8 << " or " << Math::uint8(~Math::uint8(0)) << endl;
 	out << "MIN_UINT8 : " << Math::MIN_UINT8 << endl;
-	out << "MAX_INTUNI : " << Math::MAX_INTUNI << endl;
-	out << "MIN_INTUNI : " << Math::MIN_INTUNI << endl;
-	out << "MAX_UINTUNI : " << Math::MAX_UINTUNI << endl;
+	out << "MAX_INTUNI : " << Math::MAX_INTUNI << " or " << Math::intUNI(Math::uintUNI(~Math::uintUNI(0)) >> 1) << endl;
+	out << "MIN_INTUNI : " << Math::MIN_INTUNI << " or " << Math::intUNI(Math::uintUNI(~(Math::uintUNI(~Math::uintUNI(0)) >> 1))) << endl;
+	out << "MAX_UINTUNI : " << Math::MAX_UINTUNI << " or " << Math::uintUNI(~Math::uintUNI(0)) << endl;
 	out << "MIN_UINTUNI : " << Math::MIN_UINTUNI << endl;
 
 	QVector<int> vecDup;
@@ -1758,11 +1919,14 @@ void randGenTest() {
 
 	//RandGenMT rgmt(1872638163);
 	RandGenMT rgmt(654321);
-
 	RandGenMT rgmtclone(rgmt);
 
+	//MT19937<Math::uint32> rgmtAlt(1872638163);
+	MT19937<double> rgmtAlt(654321);
+	MT19937<double> rgmtAltClone(rgmtAlt);
+
 	for (int i = 0; i < 100; i++) {
-		out << rgmt.rndFloat() << " - " << rgmtclone.rndFloat() << endl;
+		out << rgmt.rndFloat() << " - " << rgmtclone.rndFloat() << " Alt: " << rgmtAlt.rnd() << " - " << rgmtAltClone.rnd() << endl;
 	}
 
 	unsigned int numRndClasses = 10;
@@ -1773,7 +1937,7 @@ void randGenTest() {
 		testFreqs[i] = 0;
 	}
 	for (unsigned int i = 0; i < numRndTests; i++) {
-		unsigned int curIdx = rgmt.rndInt(1, numRndClasses);
+		unsigned int curIdx = /*rgmtAlt.driver().rnd(1, numRndClasses); //*/rgmt.rndInt(1, numRndClasses);
 
 		testFreqs[curIdx - 1]++;
 	}
@@ -1783,16 +1947,18 @@ void randGenTest() {
 
 		sumFreq += testFreqs[i];
 
-		//out << testFreqs[i] << " ";
+		out << testFreqs[i] << " ";
 	}
 	out << endl;
 	out << "sumFreq : " << sumFreq << endl;
 
-	out << "maxGenInt : " << rgmt.getMaxGenInt() << endl;
+	//out << "maxGenInt : " << rgmt.getMaxGenInt() << endl;
 
 	out << "Global rndSeed: " << Rand::rndSeed() << endl;
 
 	out << "####  randGenTest done  ####" << endl;
+
+	getchar();
 }
 
 void randGenTestLocStor() {
@@ -1899,6 +2065,10 @@ int main(int argc, char *argv[]) {
 	testSigSlot();
 
 	randGenTestLocStor();
+
+	testSolvers();
+
+	testAltRand();
 
 	return app.exec();
 }
