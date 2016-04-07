@@ -39,7 +39,7 @@ namespace Common {
 
 		public:
 
-			typedef T type;
+			typedef T ValueType;
 
 			virtual T rnd() = 0;
 
@@ -63,6 +63,8 @@ namespace Common {
 			virtual ~RandGen() { }
 
 		public:
+
+			typedef T ValueType;
 
 			virtual T rnd() = 0;
 
@@ -95,6 +97,8 @@ namespace Common {
 
 		public:
 
+			typedef T ValueType;
+
 			virtual T rnd() = 0;
 
 			virtual T rnd(const T& a, const T& b) {
@@ -102,6 +106,8 @@ namespace Common {
 			};
 
 		};
+
+		/**********************************************************************/
 
 		/**********************************************************************/
 

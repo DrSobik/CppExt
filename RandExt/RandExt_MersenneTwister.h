@@ -17,6 +17,7 @@
 #include "Driver"
 
 #include "RandExt_Interfaces.h"
+#include "RandExt.h"
 
 
 using namespace Common::Interfaces;
@@ -51,10 +52,14 @@ namespace Common {
 
 			protected:
 
-			MT19937() { }
+			//MT19937() { }
 
 			public:
 
+			using Common::Interfaces::RandGen<Math::uint32>::ValueType;	
+				
+			MT19937() : seed(1872638163) { init(); }	
+				
 			MT19937(const MT19937 & orig) : RandGen(), ClonableTo<MT19937>() {
 				idx = orig.idx;
 				std::copy(orig.MT, orig.MT + 624, MT);
@@ -143,10 +148,14 @@ namespace Common {
 
 			protected:
 
-			MT19937() : irg(0) { }
+			//MT19937() : irg(1872638163) { }
 
 			public:
 
+			using Common::Interfaces::RandGen<fpT>::ValueType;	
+				
+			MT19937() : irg(1872638163) { }	
+				
 			MT19937(const MT19937 & orig) : Common::Interfaces::RandGen<fpT>(), DrivenBy(), ClonableTo<MT19937 < fpT >> (), irg(orig.irg) { }
 
 			MT19937(const Math::uint32 & seed) : irg(seed) {

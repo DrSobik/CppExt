@@ -1338,10 +1338,16 @@ class SomeGGRG : public Common::AltRand::GeneralRandGen<Common::Interfaces::Rand
 
 void testAltRand() {
 
+	QTextStream out(stdout);
+	
 	SomeRG sRG;
 	SomeRGD sRGD;
 	Common::Rand::MT19937<Math::uint32> rgmt(10);
 	Common::Rand::MT19937<double> rgmtD(10);
+
+	typedef MT19937<Math::uint32> rgInt;
+	typedef MT19937<double> rgFloat;
+	CombinedRandGen<rgInt, rgFloat> grg;
 
 	sRG.rnd();
 	sRG.rnd(1, 1);
@@ -1352,6 +1358,15 @@ void testAltRand() {
 	rgmt.rnd();
 
 	rgmtD.rnd();
+
+	for (Math::uint32 i = 0; i < 100; ++i) {
+		//Math::uint32 x = grg.rnd<MT19937<Math::uint32>>();
+		out << "Integer: " << grg.rnd<rgInt>() << " - " << "Float: " << grg.rnd<rgFloat>() << endl;
+		//out << "Integer: " << grg()<rgInt> << " - " << "Float: " << grg()<rgFloat> << endl;
+	}
+	
+	getchar();
+
 }
 
 /******************************************************************************/

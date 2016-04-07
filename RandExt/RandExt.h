@@ -380,8 +380,19 @@ namespace Common {
 		//Math::int32 rSeed = 0; // Initial seed 
 		//extern thread_local RandGenMT RNG; // Declare it as extern thread_local so that there is only one RNG over all translation units but it is thread-local
 
-		extern thread_local MT19937<Math::uint32> iRNG; // For generation of integers
-		extern thread_local MT19937<double> fRNG; // For generation of floats
+#ifndef RANDEXT_IRNG_TYPE
+#define RANDEXT_IRNG_TYPE MT19937<Math::uint32>
+#endif  
+
+#ifndef RANDEXT_FRNG_TYPE
+#define RANDEXT_FRNG_TYPE MT19937<double> 
+#endif    
+
+		typedef RANDEXT_IRNG_TYPE iRNGType;
+		typedef RANDEXT_FRNG_TYPE fRNGType;
+
+		extern thread_local iRNGType iRNG; // For generation of integers
+		extern thread_local fRNGType fRNG; // For generation of floats
 
 		/**********************************************************************/
 
@@ -405,57 +416,44 @@ namespace Common {
 			return iRNG.getSeed();
 		}
 
-		template <class T = void> inline T rnd();
+		/**********************************************************************/
 
-		template<> inline Math::uint32 rnd<Math::uint32>() {
-			return iRNG.rnd();
-		}
+		// Default trap
 
-		template<> inline double rnd<double>() {
-			return fRNG.rnd();
-		}
+		template <class T, class enableT = void> class RND;
 
-		template <class T = void> inline T rnd(const T&, const T&);
+		// Integer implementation for uint32
 
-		template<> inline Math::uint32 rnd<Math::uint32>(const Math::uint32& start, const Math::uint32& finish) {
-			return iRNG.rnd(start, finish);
-		}
+		template<> class RND<Math::uint32> {
+		public:
 
-		template<> inline double rnd<double>(const double& start, const double& finish) {
-			return fRNG.rnd(start, finish);
-		}
+			inline Math::uint32 operator()() {
+				return iRNG.rnd();
+			}
 
+			inline Math::uint32 operator()(const Math::uint32& start, const Math::uint32& finish) {
+				return iRNG.rnd(start, finish);
+			}
 
+		};
 
-		/*
-		 
-		inline Math::uint32 rndMaxInt() {
+		// Float implementation
 
-			return RNG.getMaxGenInt();
+		template<class fpT> class RND <fpT, typename std::enable_if<std::is_floating_point<fpT>::value>::type> {
+		public:
 
-		} 
-		  
-		inline Math::uint32 rndInt() {
-			//return qrand(); //std::rand();
+			inline fpT operator()() {
+				return (fpT) fRNG.rnd();
+			}
 
-			return RNG.rndInt();
-		}
-		 
+			inline fpT operator()(const fpT& start, const fpT& finish) {
+				return (fpT) fRNG.rnd(start, finish);
+			}
 
-		inline Math::int32 rndInt(const Math::int32& start, const Math::int32& finish) {
-			//return start + round((double) rndInt() / (double) RAND_MAX * (double) (finish - start));
-			return start + (Math::int32) round((double) Rand::rndInt() / (double) rndMaxInt() * (double) (finish - start));
-		}
+		};
 
-		inline double rndDouble() {
-			//return (double) Rand::rndInt() / double(RAND_MAX);
-			return (double) Rand::rndInt() / double(rndMaxInt());
-		}
-
-		inline double rndDouble(const double& start, const double& finish) {
-			return start + (finish - start) * Rand::rndDouble();
-		}
-		 */
+		// Static rnd structure which can be used for generation of random numbers
+		template <class T> static RND<T> rnd = RND<T>();
 
 		/**********************************************************************/
 
