@@ -97,7 +97,7 @@ namespace Common {
 
 			}
 
-			virtual MT19937 * clone() {
+			virtual MT19937 * clone() override{
 				return new MT19937(*this);
 			}
 

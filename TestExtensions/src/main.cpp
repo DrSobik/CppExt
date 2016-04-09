@@ -1291,6 +1291,11 @@ public:
 	// Expose other used members
 	using Common::Interfaces::RandGen<Math::uintUNI>::rnd;
 
+	// Clone
+	virtual SomeRG* clone() override {
+		return new SomeRG(*this);
+	}
+
 };
 
 class SomeRGD : public Common::Interfaces::RandGen<double> {
@@ -1309,6 +1314,11 @@ public:
 	// Expose other used members
 	using Common::Interfaces::RandGen<double>::rnd;
 
+	// Clone
+	virtual SomeRGD* clone() override {
+		return new SomeRGD(*this);
+	}
+	
 };
 
 /*
@@ -1339,7 +1349,7 @@ class SomeGGRG : public Common::AltRand::GeneralRandGen<Common::Interfaces::Rand
 void testAltRand() {
 
 	QTextStream out(stdout);
-	
+
 	SomeRG sRG;
 	SomeRGD sRGD;
 	Common::Rand::MT19937<Math::uint32> rgmt(10);
@@ -1364,7 +1374,7 @@ void testAltRand() {
 		out << "Integer: " << grg.rnd<rgInt>() << " - " << "Float: " << grg.rnd<rgFloat>() << endl;
 		//out << "Integer: " << grg()<rgInt> << " - " << "Float: " << grg()<rgFloat> << endl;
 	}
-	
+
 	getchar();
 
 }

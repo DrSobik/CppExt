@@ -14,6 +14,8 @@
 #ifndef RANDEXTINTERFACES_H
 #define RANDEXTINTERFACES_H
 
+#include "Clonable"
+
 namespace Common {
 
 	namespace Interfaces {
@@ -25,7 +27,7 @@ namespace Common {
 		/**********************************************************************/
 		// Default template for all data types
 
-		template<class T, class enableT> class RandGen {
+		template<class T, class enableT> class RandGen  : public ClonableTo<RandGen<T>> {
 		private:
 
 			/** We do not need a copy constructor for the interface. */
@@ -50,7 +52,7 @@ namespace Common {
 		/**********************************************************************/
 		// Specialization for integer numbers
 
-		template<class T> class RandGen<T, typename std::enable_if<std::is_unsigned<T>::value, void>::type> {
+		template<class T> class RandGen<T, typename std::enable_if<std::is_unsigned<T>::value, void>::type> : public ClonableTo<RandGen<T>> {
 		private:
 
 			/** We do not need a copy constructor for the interface. */
@@ -58,14 +60,14 @@ namespace Common {
 
 		protected:
 
-			RandGen() { }
+			RandGen() { }			
 
-			virtual ~RandGen() { }
-
-		public:
-
+		public:	
+			
 			typedef T ValueType;
 
+			virtual ~RandGen() { }
+			
 			virtual T rnd() = 0;
 
 			virtual T rnd(const T& a, const T& b) {
@@ -83,7 +85,7 @@ namespace Common {
 		/**********************************************************************/
 		// Specialization for floating-point numbers
 
-		template<class T> class RandGen<T, typename std::enable_if<std::is_floating_point<T>::value, void>::type> {
+		template<class T> class RandGen<T, typename std::enable_if<std::is_floating_point<T>::value, void>::type> : public ClonableTo<RandGen<T>> {
 		private:
 
 			/** We do not need a copy constructor for the interface. */
@@ -93,12 +95,12 @@ namespace Common {
 
 			RandGen() { }
 
-			virtual ~RandGen() { }
-
 		public:
 
 			typedef T ValueType;
 
+			virtual ~RandGen() { }
+			
 			virtual T rnd() = 0;
 
 			virtual T rnd(const T& a, const T& b) {
