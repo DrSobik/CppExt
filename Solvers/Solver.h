@@ -21,59 +21,65 @@ using namespace Common::Interfaces;
 
 namespace Common {
 
-	namespace Interfaces {
+    namespace Interfaces {
 
-		/**********************************************************************/
+        /**********************************************************************/
 
-		// Base interface for all Solvers
+        // Base interface for all Solvers
 
-		template <class problemT, class solutionT> class Solver {
-		public:
+        template <class solutionT, class problemT, class... parametersT> class Solver {
+        private:
 
-			// The solve method which will try to solve the problem
-			virtual solutionT solve(problemT) = 0;
+            /** We do not need a copy constructor for the interface. */
+            Solver(const Solver&) {
+            }
 
-		private:
+        protected:
 
-			/** We do not need a copy constructor for the interface. */
-			Solver(const Solver&) { }
+            Solver() {
+            }
 
-		protected:
+        public:
 
-			Solver() { }
+            virtual ~Solver() {
+            }
 
-			virtual ~Solver() { }
-
-
-		};
-
-		/**********************************************************************/
-
-		/**********************************************************************/
-
-		// Base interface for all iterative Solvers
-
-		template <class problemT, class solutionT, class iterSolutionT> class IterativeSolver : public Solver<problemT, solutionT>, public PreIncrementable<iterSolutionT> {
-		public:
+            // The solve method which will try to solve the problem
+            virtual solutionT solve(problemT, parametersT...) = 0;
 
 
-		private:
+        };
 
-			/** We do not need a copy constructor for the interface. */
-			IterativeSolver(const IterativeSolver&) : Solver<problemT, solutionT>(), PreIncrementable<iterSolutionT>() { }
+        /**********************************************************************/
 
-		protected:
+        /**********************************************************************/
 
-			IterativeSolver() { }
+        // Base interface for all iterative Solvers
 
-			virtual ~IterativeSolver() { }
+        template <class solutionT, class iterSolutionT, class problemT, class... parametersT> class IterativeSolver : public Solver<solutionT, problemT, parametersT...>, public PreIncrementable<iterSolutionT> {
+        private:
 
+            /** We do not need a copy constructor for the interface. */
+            IterativeSolver(const IterativeSolver&) : Solver<solutionT, problemT, parametersT...>(), PreIncrementable<iterSolutionT>() {
+            }
 
-		};
+        protected:
 
-		/**********************************************************************/
+            IterativeSolver() {
+            }
 
-	}
+        public:
+
+            using Solver<solutionT, problemT, parametersT...>::solve;
+
+            virtual ~IterativeSolver() {
+            }
+
+        };
+
+        /**********************************************************************/
+
+    }
 
 }
 

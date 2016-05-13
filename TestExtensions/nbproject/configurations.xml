@@ -2,14 +2,27 @@
 <configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="Common" displayName="Common" projectFiles="true">
+      <logicalFolder name="Acceptable" displayName="Acceptable" projectFiles="true">
+        <itemPath>../Acceptable/Acceptable.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Algorithm" displayName="Algorithm" projectFiles="true">
+        <itemPath>../Algorithm/Algorithm.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="Assignable" displayName="Assignable" projectFiles="true">
         <itemPath>../Assignable/Assignable.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Changeable" displayName="Changeable" projectFiles="true">
+        <itemPath>../Changeable/Changeable.h</itemPath>
       </logicalFolder>
       <logicalFolder name="Clonable" displayName="Clonable" projectFiles="true">
         <itemPath>../Clonable/Clonable.h</itemPath>
       </logicalFolder>
       <logicalFolder name="Comparable" displayName="Comparable" projectFiles="true">
         <itemPath>../Comparable/Comparable.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Driver" displayName="Driver" projectFiles="true">
+        <itemPath>../Driver/Driven.h</itemPath>
+        <itemPath>../Driver/Driver.h</itemPath>
       </logicalFolder>
       <logicalFolder name="Exceptions" displayName="Exceptions" projectFiles="true">
         <itemPath>../Exceptions/Exception.h</itemPath>
@@ -19,6 +32,30 @@
         <itemPath>../Functor/Functor.h</itemPath>
       </logicalFolder>
       <logicalFolder name="Include" displayName="Include" projectFiles="true">
+        <itemPath>../Include/Acceptable</itemPath>
+        <itemPath>../Include/Algorithm</itemPath>
+        <itemPath>../Include/Assignable</itemPath>
+        <itemPath>../Include/Changeable</itemPath>
+        <itemPath>../Include/Clonable</itemPath>
+        <itemPath>../Include/Comparable</itemPath>
+        <itemPath>../Include/Driver</itemPath>
+        <itemPath>../Include/Exceptions</itemPath>
+        <itemPath>../Include/Functor</itemPath>
+        <itemPath>../Include/MathExt</itemPath>
+        <itemPath>../Include/Messages</itemPath>
+        <itemPath>../Include/Object</itemPath>
+        <itemPath>../Include/Operationable</itemPath>
+        <itemPath>../Include/Parser</itemPath>
+        <itemPath>../Include/RandExt</itemPath>
+        <itemPath>../Include/Runnable</itemPath>
+        <itemPath>../Include/SavableRestorable</itemPath>
+        <itemPath>../Include/SenderReceiver</itemPath>
+        <itemPath>../Include/Signals</itemPath>
+        <itemPath>../Include/SmartPointer</itemPath>
+        <itemPath>../Include/Solver</itemPath>
+        <itemPath>../Include/Stopable</itemPath>
+        <itemPath>../Include/Variables</itemPath>
+        <itemPath>../Include/WritableReadable</itemPath>
       </logicalFolder>
       <logicalFolder name="MathExt" displayName="MathExt" projectFiles="true">
         <itemPath>../MathExt/MathExt.h</itemPath>
@@ -34,9 +71,15 @@
                      projectFiles="true">
         <itemPath>../Operationable/Operationable.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="Parser" displayName="Parser" projectFiles="true">
+        <itemPath>../Parser/Parser.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="RandExt" displayName="RandExt" projectFiles="true">
         <itemPath>../RandExt/RandExt.cpp</itemPath>
         <itemPath>../RandExt/RandExt.h</itemPath>
+        <itemPath>../RandExt/RandExt_Interfaces.h</itemPath>
+        <itemPath>../RandExt/RandExt_LCG.h</itemPath>
+        <itemPath>../RandExt/RandExt_MersenneTwister.h</itemPath>
       </logicalFolder>
       <logicalFolder name="Runnable" displayName="Runnable" projectFiles="true">
         <itemPath>../Runnable/Runnable.h</itemPath>
@@ -59,29 +102,20 @@
                      projectFiles="true">
         <itemPath>../SmartPointer/SmartPointer.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="Solvers" displayName="Solvers" projectFiles="true">
+        <itemPath>../Solvers/Solver.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Stopable" displayName="Stopable" projectFiles="true">
+        <itemPath>../Stopable/Stopable.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="Variables" displayName="Variables" projectFiles="true">
+        <itemPath>../Variables/Variables.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="WritableReadable"
                      displayName="WritableReadable"
                      projectFiles="true">
         <itemPath>../WritableReadable/WritableReadable.h</itemPath>
       </logicalFolder>
-    </logicalFolder>
-    <logicalFolder name="Include" displayName="Include" projectFiles="true">
-      <itemPath>../Include/Assignable</itemPath>
-      <itemPath>../Include/Clonable</itemPath>
-      <itemPath>../Include/Comparable</itemPath>
-      <itemPath>../Include/Exceptions</itemPath>
-      <itemPath>../Include/Functor</itemPath>
-      <itemPath>../Include/MathExt</itemPath>
-      <itemPath>../Include/Messages</itemPath>
-      <itemPath>../Include/Object</itemPath>
-      <itemPath>../Include/Operationable</itemPath>
-      <itemPath>../Include/RandExt</itemPath>
-      <itemPath>../Include/Runnable</itemPath>
-      <itemPath>../Include/SavableRestorable</itemPath>
-      <itemPath>../Include/SenderReceiver</itemPath>
-      <itemPath>../Include/Signals</itemPath>
-      <itemPath>../Include/SmartPointer</itemPath>
-      <itemPath>../Include/WritableReadable</itemPath>
     </logicalFolder>
     <logicalFolder name="src" displayName="src" projectFiles="true">
       <itemPath>src/main.cpp</itemPath>
@@ -139,11 +173,21 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </compileType>
+      <item path="../Acceptable/Acceptable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Algorithm/Algorithm.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../Assignable/Assignable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Changeable/Changeable.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Clonable/Clonable.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Comparable/Comparable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Driver/Driven.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Driver/Driver.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Exceptions/Exception.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -151,11 +195,19 @@
       </item>
       <item path="../Functor/Functor.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../Include/Acceptable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Algorithm" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../Include/Assignable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Changeable" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Include/Clonable" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Include/Comparable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Driver" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Include/Exceptions" ex="false" tool="3" flavor2="0">
       </item>
@@ -169,6 +221,8 @@
       </item>
       <item path="../Include/Operationable" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../Include/Parser" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../Include/RandExt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Include/Runnable" ex="false" tool="3" flavor2="0">
@@ -181,6 +235,12 @@
       </item>
       <item path="../Include/SmartPointer" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../Include/Solver" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Stopable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Variables" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../Include/WritableReadable" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../MathExt/MathExt.h" ex="false" tool="3" flavor2="0">
@@ -191,9 +251,20 @@
       </item>
       <item path="../Operationable/Operationable.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../Parser/Parser.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../RandExt/RandExt.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../RandExt/RandExt.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../RandExt/RandExt_Interfaces.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../RandExt/RandExt_LCG.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../RandExt/RandExt_MersenneTwister.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="../Runnable/Runnable.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -207,6 +278,12 @@
       <item path="../Signals/Signal.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../SmartPointer/SmartPointer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Solvers/Solver.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Stopable/Stopable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Variables/Variables.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../WritableReadable/WritableReadable.h"
             ex="false"
@@ -222,7 +299,7 @@
     </conf>
     <conf name="Release" type="4">
       <toolsSet>
-        <compilerSet>GNU|GNU</compilerSet>
+        <compilerSet>default</compilerSet>
         <dependencyChecking>true</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
@@ -235,6 +312,7 @@
         <uiDir>$$DESTDIR/ui</uiDir>
         <defs>
           <Elem>OBJECTS_DIR=$$DESTDIR/obj</Elem>
+          <Elem>QMAKE_CXXFLAGS += -std=c++14</Elem>
         </defs>
       </qt>
       <compileType>
@@ -246,7 +324,7 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
-          <standard>8</standard>
+          <standard>11</standard>
           <incDir>
             <pElem>.</pElem>
             <pElem>../Include</pElem>
@@ -265,11 +343,21 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </compileType>
+      <item path="../Acceptable/Acceptable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Algorithm/Algorithm.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../Assignable/Assignable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Changeable/Changeable.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Clonable/Clonable.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Comparable/Comparable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Driver/Driven.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Driver/Driver.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Exceptions/Exception.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -277,11 +365,19 @@
       </item>
       <item path="../Functor/Functor.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../Include/Acceptable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Algorithm" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../Include/Assignable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Changeable" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Include/Clonable" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Include/Comparable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Driver" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Include/Exceptions" ex="false" tool="3" flavor2="0">
       </item>
@@ -295,6 +391,8 @@
       </item>
       <item path="../Include/Operationable" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../Include/Parser" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../Include/RandExt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../Include/Runnable" ex="false" tool="3" flavor2="0">
@@ -307,6 +405,12 @@
       </item>
       <item path="../Include/SmartPointer" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../Include/Solver" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Stopable" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Include/Variables" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../Include/WritableReadable" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../MathExt/MathExt.h" ex="false" tool="3" flavor2="0">
@@ -317,9 +421,20 @@
       </item>
       <item path="../Operationable/Operationable.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../Parser/Parser.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../RandExt/RandExt.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../RandExt/RandExt.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../RandExt/RandExt_Interfaces.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../RandExt/RandExt_LCG.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../RandExt/RandExt_MersenneTwister.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="../Runnable/Runnable.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -333,6 +448,12 @@
       <item path="../Signals/Signal.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../SmartPointer/SmartPointer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Solvers/Solver.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Stopable/Stopable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../Variables/Variables.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../WritableReadable/WritableReadable.h"
             ex="false"

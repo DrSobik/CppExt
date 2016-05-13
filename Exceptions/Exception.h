@@ -8,8 +8,11 @@
 #ifndef EXCEPTION_H
 #define	EXCEPTION_H
 
+#include <exception>
+
 #include "Object"
 
+using namespace std;
 using namespace Common;
 
 namespace Common {
@@ -25,9 +28,9 @@ namespace Common {
 			
 		public:
 
-			Exception(senderT* sender = NULL) : Ts()..., sender(NULL) {this->sender = sender;}
+			Exception(senderT* sender = nullptr) : Ts()..., sender(nullptr) {this->sender = sender;}
 			
-			Exception(const Exception& orig) : Ts(orig)..., sender(NULL) {}
+			Exception(const Exception& orig) : Ts(orig)..., sender(nullptr) {}
 
 			virtual ~Exception() {}
 			

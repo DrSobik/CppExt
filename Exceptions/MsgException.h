@@ -6,7 +6,7 @@
  */
 
 #ifndef MSGEXCEPTION_H
-#define	MSGEXCEPTION_H
+#define MSGEXCEPTION_H
 
 #include <string>
 
@@ -16,110 +16,127 @@
 
 
 using namespace std;
-		
+
 using namespace Common;
 using namespace Common::Interfaces;
 using namespace Common::Messages;
 
 namespace Common {
 
-	namespace Exceptions {
+    namespace Exceptions {
 
-		/**********************************************************************/
+        /**********************************************************************/
 
-		template<class msgT = Message<string>, class senderT = BasicObject> class MsgException : public Exception<> {
-		private:
+        template<class msgT = Message<string>, class senderT = BasicObject> class MsgException : public Exception<> {
+        private:
 
-			msgT msg;
+            msgT msg;
 
-		public:
+        public:
 
-			MsgException(const msgT& someMsg, senderT* sender = NULL) : Exception(sender), msg(someMsg) {}
+            MsgException(const msgT& someMsg, senderT* sender = NULL) : Exception(sender), msg(someMsg) {
+            }
 
-			MsgException(const MsgException& orig) : Exception(orig), msg(orig.msg) {}
+            MsgException(const MsgException& orig) : Exception(orig), msg(orig.msg) {
+            }
 
-			virtual ~MsgException() {}
+            virtual ~MsgException() {
+            }
 
-			virtual msgT& getMsg() {
-				return msg;
-			}
+            virtual msgT& getMsg() {
+                return msg;
+            }
 
-		private:
+        private:
 
-			MsgException() {}
+            MsgException() {
+            }
 
-		};
+        };
 
-		/**********************************************************************/
+        /**********************************************************************/
 
-		/**********************************************************************/
+        /**********************************************************************/
 
-		template<class msgT = Message<string>, class senderT = BasicObject> class InfoMsgException : public MsgException<msgT> {
-		public:
+        template<class msgT = Message<string>, class senderT = BasicObject> class InfoMsgException : public MsgException<msgT> {
+        public:
 
-			InfoMsgException(msgT someMsg, senderT* sender = NULL) : MsgException<msgT>(msgT("Info: ") + someMsg, sender) {
-			}
+            InfoMsgException(msgT someMsg, senderT* sender = NULL) : MsgException<msgT>(msgT("Info: ") + someMsg, sender) {
+            }
 
-			InfoMsgException(const InfoMsgException& orig) : MsgException<msgT>(orig) {
-			}
+            InfoMsgException(const InfoMsgException& orig) : MsgException<msgT>(orig) {
+            }
 
-			virtual ~InfoMsgException() {
-			}
+            InfoMsgException(const char* someMsg, senderT* sender = NULL) : MsgException<msgT>(msgT("Info: ") + msgT(someMsg), sender) {
+            }
+            
+            virtual ~InfoMsgException() {
+            }
 
-		private:
+        private:
 
-			InfoMsgException() {
-			}
+            InfoMsgException() {
+            }
 
-		};
+        };
 
-		/**********************************************************************/
+        /**********************************************************************/
 
-		/**********************************************************************/
+        /**********************************************************************/
 
-		template<class msgT = Message<string>, class senderT = BasicObject> class WarnMsgException : public MsgException<msgT> {
-		public:
+        template<class msgT = Message<string>, class senderT = BasicObject> class WarnMsgException : public MsgException<msgT> {
+        public:
 
-			WarnMsgException(msgT someMsg, senderT* sender = NULL) : MsgException<msgT>(msgT("Warning: ") + someMsg, sender) {
-			}
+            WarnMsgException(msgT someMsg, senderT* sender = NULL) : MsgException<msgT>(msgT("Warning: ") + someMsg, sender) {
+            }
 
-			WarnMsgException(const WarnMsgException& orig) : MsgException<msgT>(orig) {
-			}
+            WarnMsgException(const WarnMsgException& orig) : MsgException<msgT>(orig) {
+            }
 
-			virtual ~WarnMsgException() {
-			}
+            WarnMsgException(const char* someMsg, senderT* sender = NULL) : MsgException<msgT>(msgT("Warning: ") + msgT(someMsg), sender) {
+            }
+            
+            virtual ~WarnMsgException() {
+            }
 
-		private:
+        private:
 
-			WarnMsgException() {
-			}
+            WarnMsgException() {
+            }
 
-		};
+        };
 
-		/**********************************************************************/
+        /**********************************************************************/
 
-		/**********************************************************************/
+        /**********************************************************************/
 
-		template<class msgT = Message<string>, class senderT = BasicObject> class ErrMsgException : public MsgException<msgT> {
-		public:
+        template<class msgT = Message<string>, class senderT = BasicObject> class ErrMsgException : public MsgException<msgT> {
+        public:
 
-			ErrMsgException(const msgT& someMsg, senderT* sender = NULL) : MsgException<msgT>(msgT("Error: ") + someMsg, sender) {}
+            ErrMsgException(const msgT& someMsg, senderT* sender = NULL) : MsgException<msgT>(msgT("Error: ") + someMsg, sender) {
+            }
 
-			ErrMsgException(const ErrMsgException& orig) : MsgException<msgT>(orig) {}
+            ErrMsgException(const ErrMsgException& orig) : MsgException<msgT>(orig) {
+            }
 
-			virtual ~ErrMsgException() {}
+            ErrMsgException(const char* someMsg, senderT* sender = NULL) : MsgException<msgT>(msgT("Error: ") + msgT(someMsg), sender) {
+            }
 
-		private:
+            virtual ~ErrMsgException() {
+            }
 
-			ErrMsgException() {}
+        private:
 
-		};
+            ErrMsgException() {
+            }
 
-		/**********************************************************************/
+        };
 
-	}
+        /**********************************************************************/
+
+    }
 
 }
 
-#endif	/* MSGEXCEPTION_H */
+#endif /* MSGEXCEPTION_H */
 

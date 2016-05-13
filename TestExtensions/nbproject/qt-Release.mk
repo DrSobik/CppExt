@@ -10,11 +10,11 @@ MAKEFILE      = qttmp-Release.mk
 
 ####### Compiler, tools and options
 
-CC            = gcc
-CXX           = g++
+CC            = gcc-5
+CXX           = g++-5
 DEFINES       = -DDEBUG -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -O2 -std=c++0x -Wall -W -D_REENTRANT -fPIC $(DEFINES)
+CXXFLAGS      = -pipe -std=c++14 -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 INCPATH       = -Inbproject -I. -Inbproject -I../Include -isystem /usr/include/qt5 -isystem /usr/include/qt5/QtWidgets -isystem /usr/include/qt5/QtGui -isystem /usr/include/qt5/QtCore -Ibuilds/Lin64bit/release/moc -I/usr/lib64/qt5/mkspecs/linux-g++
 QMAKE         = /usr/bin/qmake-qt5
 DEL_FILE      = rm -f
@@ -124,7 +124,6 @@ DIST          = /usr/lib64/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib64/qt5/mkspecs/features/default_pre.prf \
 		/usr/lib64/qt5/mkspecs/features/resolve_config.prf \
 		/usr/lib64/qt5/mkspecs/features/default_post.prf \
-		/usr/lib64/qt5/mkspecs/features/c++11.prf \
 		/usr/lib64/qt5/mkspecs/features/warn_on.prf \
 		/usr/lib64/qt5/mkspecs/features/qt.prf \
 		/usr/lib64/qt5/mkspecs/features/resources.prf \
@@ -136,38 +135,58 @@ DIST          = /usr/lib64/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib64/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib64/qt5/mkspecs/features/yacc.prf \
 		/usr/lib64/qt5/mkspecs/features/lex.prf \
-		nbproject/nbproject/qt-Release.pro ../Assignable/Assignable.h \
+		nbproject/nbproject/qt-Release.pro ../Acceptable/Acceptable.h \
+		../Algorithm/Algorithm.h \
+		../Assignable/Assignable.h \
+		../Changeable/Changeable.h \
 		../Clonable/Clonable.h \
 		../Comparable/Comparable.h \
+		../Driver/Driven.h \
+		../Driver/Driver.h \
 		../Exceptions/Exception.h \
 		../Exceptions/MsgException.h \
 		../Functor/Functor.h \
+		../Include/Acceptable \
+		../Include/Algorithm \
 		../Include/Assignable \
+		../Include/Changeable \
 		../Include/Clonable \
 		../Include/Comparable \
+		../Include/Driver \
 		../Include/Exceptions \
 		../Include/Functor \
 		../Include/MathExt \
 		../Include/Messages \
 		../Include/Object \
 		../Include/Operationable \
+		../Include/Parser \
 		../Include/RandExt \
 		../Include/Runnable \
 		../Include/SavableRestorable \
 		../Include/SenderReceiver \
 		../Include/Signals \
 		../Include/SmartPointer \
+		../Include/Solver \
+		../Include/Stopable \
+		../Include/Variables \
 		../Include/WritableReadable \
 		../MathExt/MathExt.h \
 		../Messages/Messages.h \
 		../Object/Object.h \
 		../Operationable/Operationable.h \
+		../Parser/Parser.h \
 		../RandExt/RandExt.h \
+		../RandExt/RandExt_Interfaces.h \
+		../RandExt/RandExt_LCG.h \
+		../RandExt/RandExt_MersenneTwister.h \
 		../Runnable/Runnable.h \
 		../SavableRestorable/SavableRestorable.h \
 		../SenderReceiver/SenderReceiver.h \
 		../Signals/Signal.h \
 		../SmartPointer/SmartPointer.h \
+		../Solvers/Solver.h \
+		../Stopable/Stopable.h \
+		../Variables/Variables.h \
 		../WritableReadable/WritableReadable.h \
 		src/test.h ../RandExt/RandExt.cpp \
 		src/main.cpp \
@@ -273,7 +292,6 @@ qttmp-Release.mk: nbproject/qt-Release.pro /usr/lib64/qt5/mkspecs/linux-g++/qmak
 		/usr/lib64/qt5/mkspecs/features/default_pre.prf \
 		/usr/lib64/qt5/mkspecs/features/resolve_config.prf \
 		/usr/lib64/qt5/mkspecs/features/default_post.prf \
-		/usr/lib64/qt5/mkspecs/features/c++11.prf \
 		/usr/lib64/qt5/mkspecs/features/warn_on.prf \
 		/usr/lib64/qt5/mkspecs/features/qt.prf \
 		/usr/lib64/qt5/mkspecs/features/resources.prf \
@@ -360,7 +378,6 @@ qttmp-Release.mk: nbproject/qt-Release.pro /usr/lib64/qt5/mkspecs/linux-g++/qmak
 /usr/lib64/qt5/mkspecs/features/default_pre.prf:
 /usr/lib64/qt5/mkspecs/features/resolve_config.prf:
 /usr/lib64/qt5/mkspecs/features/default_post.prf:
-/usr/lib64/qt5/mkspecs/features/c++11.prf:
 /usr/lib64/qt5/mkspecs/features/warn_on.prf:
 /usr/lib64/qt5/mkspecs/features/qt.prf:
 /usr/lib64/qt5/mkspecs/features/resources.prf:
@@ -390,7 +407,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../Assignable/Assignable.h ../Clonable/Clonable.h ../Comparable/Comparable.h ../Exceptions/Exception.h ../Exceptions/MsgException.h ../Functor/Functor.h ../Include/Assignable ../Include/Clonable ../Include/Comparable ../Include/Exceptions ../Include/Functor ../Include/MathExt ../Include/Messages ../Include/Object ../Include/Operationable ../Include/RandExt ../Include/Runnable ../Include/SavableRestorable ../Include/SenderReceiver ../Include/Signals ../Include/SmartPointer ../Include/WritableReadable ../MathExt/MathExt.h ../Messages/Messages.h ../Object/Object.h ../Operationable/Operationable.h ../RandExt/RandExt.h ../Runnable/Runnable.h ../SavableRestorable/SavableRestorable.h ../SenderReceiver/SenderReceiver.h ../Signals/Signal.h ../SmartPointer/SmartPointer.h ../WritableReadable/WritableReadable.h src/test.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../Acceptable/Acceptable.h ../Algorithm/Algorithm.h ../Assignable/Assignable.h ../Changeable/Changeable.h ../Clonable/Clonable.h ../Comparable/Comparable.h ../Driver/Driven.h ../Driver/Driver.h ../Exceptions/Exception.h ../Exceptions/MsgException.h ../Functor/Functor.h ../Include/Acceptable ../Include/Algorithm ../Include/Assignable ../Include/Changeable ../Include/Clonable ../Include/Comparable ../Include/Driver ../Include/Exceptions ../Include/Functor ../Include/MathExt ../Include/Messages ../Include/Object ../Include/Operationable ../Include/Parser ../Include/RandExt ../Include/Runnable ../Include/SavableRestorable ../Include/SenderReceiver ../Include/Signals ../Include/SmartPointer ../Include/Solver ../Include/Stopable ../Include/Variables ../Include/WritableReadable ../MathExt/MathExt.h ../Messages/Messages.h ../Object/Object.h ../Operationable/Operationable.h ../Parser/Parser.h ../RandExt/RandExt.h ../RandExt/RandExt_Interfaces.h ../RandExt/RandExt_LCG.h ../RandExt/RandExt_MersenneTwister.h ../Runnable/Runnable.h ../SavableRestorable/SavableRestorable.h ../SenderReceiver/SenderReceiver.h ../Signals/Signal.h ../SmartPointer/SmartPointer.h ../Solvers/Solver.h ../Stopable/Stopable.h ../Variables/Variables.h ../WritableReadable/WritableReadable.h src/test.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../RandExt/RandExt.cpp src/main.cpp src/test.cpp $(DISTDIR)/
 
 
@@ -448,10 +465,31 @@ builds/Lin64bit/release/moc/main.moc: ../Include/Object \
 		../MathExt/MathExt.h \
 		../Include/RandExt \
 		../RandExt/RandExt.h \
+		../RandExt/RandExt_MersenneTwister.h \
+		../Include/Driver \
+		../Driver/Driver.h \
+		../Driver/Driven.h \
+		../RandExt/RandExt_Interfaces.h \
+		../RandExt/RandExt_LCG.h \
+		../RandExt/RandExt_CombinedRandGen.h \
 		../Include/SenderReceiver \
 		../SenderReceiver/SenderReceiver.h \
 		../Include/Signals \
 		../Signals/Signal.h \
+		../Include/Solver \
+		../Solvers/Solver.h \
+		../Include/Algorithm \
+		../Algorithm/Algorithm.h \
+		../Include/Stopable \
+		../Stopable/Stopable.h \
+		../Include/Variables \
+		../Variables/Variables.h \
+		../Include/Changeable \
+		../Changeable/Changeable.h \
+		../Include/Acceptable \
+		../Acceptable/Acceptable.h \
+		../Include/Parser \
+		../Parser/Parser.h \
 		src/test.h \
 		src/main.cpp
 	/usr/lib64/qt5/bin/moc $(DEFINES) -I/usr/lib64/qt5/mkspecs/linux-g++ -I/data/Projects/Common/TestExtensions/nbproject -I/data/Projects/Common/TestExtensions/nbproject -I/data/Projects/Common/TestExtensions/Include -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I. -I/usr/include/c++/4.8 -I/usr/include/c++/4.8/x86_64-suse-linux -I/usr/include/c++/4.8/backward -I/usr/lib64/gcc/x86_64-suse-linux/4.8/include -I/usr/local/include -I/usr/lib64/gcc/x86_64-suse-linux/4.8/include-fixed -I/usr/x86_64-suse-linux/include -I/usr/include src/main.cpp -o builds/Lin64bit/release/moc/main.moc
@@ -483,7 +521,12 @@ builds/Lin64bit/release/obj/RandExt.o: ../RandExt/RandExt.cpp ../RandExt/RandExt
 		../Include/Messages \
 		../Messages/Messages.h \
 		../Include/Operationable \
-		../Operationable/Operationable.h
+		../Operationable/Operationable.h \
+		../RandExt/RandExt_MersenneTwister.h \
+		../Include/Driver \
+		../Driver/Driver.h \
+		../Driver/Driven.h \
+		../RandExt/RandExt_Interfaces.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o builds/Lin64bit/release/obj/RandExt.o ../RandExt/RandExt.cpp
 
 builds/Lin64bit/release/obj/main.o: src/main.cpp ../Include/Object \
@@ -515,10 +558,31 @@ builds/Lin64bit/release/obj/main.o: src/main.cpp ../Include/Object \
 		../MathExt/MathExt.h \
 		../Include/RandExt \
 		../RandExt/RandExt.h \
+		../RandExt/RandExt_MersenneTwister.h \
+		../Include/Driver \
+		../Driver/Driver.h \
+		../Driver/Driven.h \
+		../RandExt/RandExt_Interfaces.h \
+		../RandExt/RandExt_LCG.h \
+		../RandExt/RandExt_CombinedRandGen.h \
 		../Include/SenderReceiver \
 		../SenderReceiver/SenderReceiver.h \
 		../Include/Signals \
 		../Signals/Signal.h \
+		../Include/Solver \
+		../Solvers/Solver.h \
+		../Include/Algorithm \
+		../Algorithm/Algorithm.h \
+		../Include/Stopable \
+		../Stopable/Stopable.h \
+		../Include/Variables \
+		../Variables/Variables.h \
+		../Include/Changeable \
+		../Changeable/Changeable.h \
+		../Include/Acceptable \
+		../Acceptable/Acceptable.h \
+		../Include/Parser \
+		../Parser/Parser.h \
 		src/test.h \
 		builds/Lin64bit/release/moc/main.moc
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o builds/Lin64bit/release/obj/main.o src/main.cpp
@@ -541,6 +605,13 @@ builds/Lin64bit/release/obj/test.o: src/test.cpp src/test.h \
 		../Include/Exceptions \
 		../Exceptions/Exception.h \
 		../Exceptions/MsgException.h \
+		../RandExt/RandExt_MersenneTwister.h \
+		../Include/Driver \
+		../Driver/Driver.h \
+		../Driver/Driven.h \
+		../RandExt/RandExt_Interfaces.h \
+		../RandExt/RandExt_LCG.h \
+		../RandExt/RandExt_CombinedRandGen.h \
 		../Include/Signals \
 		../Signals/Signal.h \
 		../Include/Functor \

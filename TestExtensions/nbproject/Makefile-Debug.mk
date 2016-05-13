@@ -14,15 +14,15 @@ GREP=grep
 NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
-CC=gcc
-CCC=g++
-CXX=g++
+CC=gcc-5
+CCC=g++-5
+CXX=g++-5
 FC=gfortran
 AS=as
 QMAKE=qmake-qt5
 
 # Macros
-CND_PLATFORM=GNU-Linux
+CND_PLATFORM=GNU_GCC5-Linux
 CND_DLIB_EXT=so
 CND_CONF=Debug
 CND_DISTDIR=dist
