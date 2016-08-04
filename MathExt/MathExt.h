@@ -13,6 +13,7 @@
 #include <set>
 #include <algorithm>
 #include <cstdint>
+#include <limits>
 
 #include "Exceptions"
 
@@ -58,6 +59,11 @@ namespace Common {
 
 		/**********************************************************************/
 
+		template<class T> static const T numLowerLimit = std::numeric_limits<T>::lowest();
+		template<class T> static const T numUpperLimit = std::numeric_limits<T>::max();
+		template<class T> static const T numInfinity = std::numeric_limits<T>::infinity();
+		template<class T> static const T numEpsilon = std::numeric_limits<T>::epsilon();
+		
 		const double E = 2.71828182845904523536028747135266249775724709369995; //M_E;
 		const double Pi = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679; //M_PI;
 		const double Pi_2 = Pi / 2.0; //M_PI_2;
@@ -113,7 +119,7 @@ namespace Common {
 		const uintUNI MAX_UINTUNI = MAX_UINT64;
 		const uintUNI MIN_UINTUNI = MIN_UINT64;
 #endif  
-
+		
 		/**********************************************************************/
 
 		/**********************************************************************/
