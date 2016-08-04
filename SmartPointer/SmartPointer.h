@@ -130,20 +130,20 @@ namespace Common {
 
 	    virtual T* operator->() {
 
-		if (ptr == nullptr) throw ErrMsgException<Message < string >> (string("SmartPointer::operator->() : Trying to dereference a NULL pointer!!!"), this);
+        if (ptr == (T*) nullptr) throw ErrMsgException<Message < string >> (string("SmartPointer::operator->() : Trying to dereference a NULL pointer!!!"), this);
 
 		return ptr;
 	    }
 
 	    virtual const T* operator->() const {
 
-		if (ptr == nullptr) throw ErrMsgException<Message < string >> (string("SmartPointer::operator->() : Trying to dereference a NULL pointer!!!"), (BasicSmartPointer*) this);
+        if (ptr == (T*) nullptr) throw ErrMsgException<Message < string >> (string("SmartPointer::operator->() : Trying to dereference a NULL pointer!!!"), (BasicSmartPointer*) this);
 
 		return ptr;
 	    }
 
 	    virtual bool operator==(const BasicSmartPointer & other) {
-		return ptr == ((SmartPointer&) other).ptr;
+        return (T*) ptr == (T*) ((SmartPointer&) other).ptr;
 	    }
 
 	    virtual void setPointer(const T* somePtr, const bool& deleteCurrent = false) {
@@ -160,7 +160,7 @@ namespace Common {
 
 		if (ptr != somePtr) { // Otherwise, do nothing
 
-		    if (deleteCurrent && ptr != nullptr) {
+            if (deleteCurrent && ptr != (T*) nullptr) {
 
 			deletePtr(ptr);
 
@@ -184,7 +184,7 @@ namespace Common {
 	    }
 
 	    virtual bool valid() const {
-		return ptr != nullptr;
+        return ptr != (T*) nullptr;
 	    }
 
 	private:
